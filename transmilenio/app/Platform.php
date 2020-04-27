@@ -18,4 +18,8 @@ class Platform extends Model
     public function station(){
         return $this->hasOne('App\Station', 'id_estacion', 'id_estacion');
     }
+
+    public function  wagons(){
+        return $this->hasMany('App\Wagon', 'id_plataforma', 'id_vagon');
+    }
 }

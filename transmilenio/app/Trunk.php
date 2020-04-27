@@ -13,7 +13,7 @@ class Trunk extends Model
 
     public function hasStation(int $station)
     {
-        return $this->stations()->whereRaw('"TRONCAL_ESTACION"."ID_ESTACION"='.$station)->count() > 0;
+        return $this->stations()->whereRaw('"troncal_estacion"."id_estacion"='.$station)->count() > 0;
     }
 
     public function stations(){
