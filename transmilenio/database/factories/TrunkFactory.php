@@ -9,6 +9,7 @@ $factory->define(Trunk::class, function (Faker $faker) {
     return [
         'nombre_troncal' => $faker->text($maxNbChars = 50),
         'letra_troncal'=> $faker->lexify('??'),
-        'color_troncal'=>$faker->hexColor
+        'color_troncal'=>$faker->hexColor,
+        'activo_troncal'=> 'a'
     ];
 });

@@ -123,9 +123,12 @@ class TrunkController extends Controller
             [
                 'nombre_troncal' => 'required|max:50',
                 'letra_troncal'=> 'required|max:2',
-                'color_troncal' => 'required|max:7'
+                'color_troncal' => 'required|max:7',
+                'activo_troncal' => 'required|in:a,n'
             ],
-            ['max' => ' El :attribute no debe exceder los :max caracteres.']
+            ['max' => ' El :attribute no debe exceder los :max caracteres.',
+             'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo'
+            ]
         );
     }
 }

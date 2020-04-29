@@ -2,12 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="316a3bb9-0f49-4b15-886e-71f608d22ffa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/symfony2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/symfony2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PortalController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PortalController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/StationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/StationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TrunkController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TrunkController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/VerifyCsrfToken.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/VerifyCsrfToken.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Platform.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Platform.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Portal.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Portal.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Station.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Station.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Trunk.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Trunk.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/factories/PlatformFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/factories/PlatformFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/factories/StationFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/factories/StationFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/factories/TrunkFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/factories/TrunkFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/factories/portalFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/factories/portalFactory.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeds/PlatformSeed.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/PlatformSeed.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seeds/PortalSeed.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/PortalSeed.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seeds/StationSeed.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/StationSeed.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seeds/TrunkSeed.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/TrunkSeed.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,7 +209,10 @@
       <workItem from="1587674289703" duration="12018000" />
       <workItem from="1587843240807" duration="1938000" />
       <workItem from="1587845312162" duration="23404000" />
-      <workItem from="1587941186992" duration="21368000" />
+      <workItem from="1587941186992" duration="21964000" />
+      <workItem from="1588015284084" duration="14959000" />
+      <workItem from="1588084144434" duration="36181000" />
+      <workItem from="1588140879189" duration="164000" />
     </task>
     <servers />
   </component>
@@ -221,49 +236,49 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="523" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.824@0.0.1536.824" timestamp="1587948421764" />
-    <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1587859075389">
+    <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1588113275122">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1536.824@0.0.1536.824" timestamp="1587859075389" />
+    <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1536.824@0.0.1536.824" timestamp="1588113275122" />
     <state x="548" y="167" key="FileChooserDialogImpl" timestamp="1587845396210">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1587845396210" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1587966294037">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1588141042211">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587966294037" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1587966294037">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588141042211" />
+    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1588141042211">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1587966294037" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1587966294036">
+    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1588141042211" />
+    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1588141042211">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1587966294036" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1587966294037">
+    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1588141042211" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1588141042211">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1587966294037" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1588141042211" />
     <state x="277" y="55" key="SettingsEditor" timestamp="1587845276213">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1587845276213" />
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1587941200380">
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1588140881123">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1587941200380" />
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1588140881123" />
     <state x="187" y="83" width="1204" height="512" key="dock-window-1" timestamp="1587684515859">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="187" y="83" width="1204" height="512" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1587684515859" />
-    <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1587856382095">
+    <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1588106897675">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="425" y="187" width="672" height="677" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1587856382095" />
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1587679791287">
+    <state x="425" y="187" width="672" height="677" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1588106897675" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1588132569494">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1587679791287" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1588132569494" />
   </component>
 </project>

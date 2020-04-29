@@ -9,7 +9,7 @@ class Portal extends Model
     protected $table = 'portales';
     protected $primaryKey = 'id_portal';
     public $timestamps = false;
-    protected $fillable = ['nombre_portal','id_troncal'];
+    protected $fillable = ['nombre_portal','id_troncal','activo_portal'];
 
     public function  trunks(){
         return $this->belongsTo('App\Trunk', $ownerKey='id_troncal');

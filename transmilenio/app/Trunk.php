@@ -9,11 +9,11 @@ class Trunk extends Model
     protected $table = 'troncales';
     protected $primaryKey = 'id_troncal';
     public $timestamps = false;
-    protected $fillable = ['nombre_troncal','letra_troncal','color_troncal'];
+    protected $fillable = ['nombre_troncal','letra_troncal','color_troncal','activo_troncal'];
 
     public function hasStation(int $station)
     {
-        return $this->stations()->whereRaw('"troncal_estacion"."id_estacion"='.$station)->count() > 0;
+        return $this->stations()->whereRaw('"TRONCAL_ESTACION"."ID_ESTACION"='.$station)->count() > 0;
     }
 
     public function stations(){

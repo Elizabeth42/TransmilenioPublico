@@ -122,8 +122,11 @@ class StationController extends Controller
     private function custom_validator($data)
     {
         return Validator::make($data,
-            ['nombre_estacion' => 'required|max:50'],
-            ['max' => ' El :attribute no debe exceder los :max caracteres.']
+            ['nombre_estacion' => 'required|max:50',
+                'activo_estacion' => 'required|in:a,n'
+            ],
+            ['max' => ' El :attribute no debe exceder los :max caracteres.',
+                'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo']
         );
     }
 }
