@@ -19,6 +19,8 @@ class VerifyCsrfToken extends Middleware
         "trunk_station/*",
         "portal",
         "portal/*",
+        "platform",
+        "platform/*",
         //
     ];
 }

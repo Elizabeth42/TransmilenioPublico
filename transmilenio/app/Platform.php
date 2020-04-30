@@ -22,4 +22,7 @@ class Platform extends Model
     public function  wagons(){
         return $this->hasMany('App\Wagon', 'id_plataforma', 'id_vagon');
     }
+    public function  Portals(){
+        return $this->belongsTo('App\Portal', $ownerKey='id_portal');
+    }
 }

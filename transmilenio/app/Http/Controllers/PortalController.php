@@ -39,7 +39,7 @@ class PortalController extends Controller
      */
     public function store(Request $request)
     {
-        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
+    // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $validator = $this->custom_validator($request->all());
         if ($validator->fails()) {
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -48,7 +48,10 @@ class PortalController extends Controller
         $trunk = Trunk::find($request->input('id_troncal'));
         if (!isset($trunk))
             return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
-
+    // permite validar que la troncal a la cual se le esta asignando este portal se encuentre activa
+        if ($trunk->activo_troncal=='n')
+            return response('{"error": "La troncal no se encuentra activa por tanto no se le puede asignar una troncal"}', 300)->header('Content-Type', 'application/json');
+    //se encargara de crear el portal con la informacion del json
         $created = Portal::create($validator->validated());
         return response('{ "id": ' . $created->id_portal . '}', 200)->header('Content-Type', 'application/json');
     }
@@ -111,16 +114,15 @@ class PortalController extends Controller
         $portal = Portal::find($id);
         if (!isset($portal))
             return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
+        if ($portal->platforms()->count() > 0)
+            return response('{ "error": "Hay una plataforma que tiene este portal asignado"}', 300)->header('Content-Type', 'application/json');
         try {
             $deleted = $portal->delete();
-            log::info(print_r('_______________________________________________________________________________',true));
-            //ini_set('memory_limit', '-1');
         } catch (Exception $e) {
-            log::info(print_r($e,true));
             $deleted = false;
         }
         if ($deleted)
-            return response('{ "success": El portal fue eliminado"}', 200)->header('Content-Type', 'application/json');
+            return response('{ "success": "El portal fue eliminado"}', 200)->header('Content-Type', 'application/json');
         else
             return response('{ "error": "El portal no pudo ser eliminado"}', 300)->header('Content-Type', 'application/json');
     }

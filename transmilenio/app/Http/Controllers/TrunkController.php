@@ -104,8 +104,9 @@ class TrunkController extends Controller
         $trunk = Trunk::find($id);
         if (!isset($trunk))
             return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+
         if ($trunk->portals()->count() > 0)
-            return response('{ "error": "La troncal tiene portales asociadas y no puede ser eliminada"}', 300)->header('Content-Type', 'application/json');
+            return response('{ "error": "La troncal tiene portales asociados y no puede ser eliminada"}', 300)->header('Content-Type', 'application/json');
         try {
             $deleted = $trunk->delete();
         } catch (Exception $e) {

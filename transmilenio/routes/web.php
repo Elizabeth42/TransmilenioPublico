@@ -19,3 +19,4 @@ Route::post('trunk/{trunk}/station', 'StationTrunkController@add_stations_to_tru
 Route::put('trunk/{trunk}/station', 'StationTrunkController@delete_station_to_trunk');
 Route::resource('trunk', 'TrunkController');
 Route::resource('portal', 'PortalController');
+Route::resource('platform', 'PlatformController');

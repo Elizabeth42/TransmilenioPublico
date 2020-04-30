@@ -14,4 +14,7 @@ class Portal extends Model
     public function  trunks(){
         return $this->belongsTo('App\Trunk', $ownerKey='id_troncal');
     }
+    public function  platforms(){
+        return $this->hasMany('App\Platform', 'id_portal', 'id_portal');
+    }
 }

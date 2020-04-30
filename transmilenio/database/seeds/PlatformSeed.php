@@ -15,7 +15,7 @@ class PlatformSeed extends Seeder
     {
         $portals = App\Portal::all();
         $stations = App\Station::all();
-        factory(App\Platform::class, 10)->create()->each(function ($platform) use ($portals, $stations) {
+        factory(App\Platform::class, 7)->create()->each(function ($platform) use ($portals, $stations) {
             $r =  rand(0, 1);
             if ($r == 0) // se asumira que es asociada a un portal
             {

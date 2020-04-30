@@ -12,13 +12,8 @@ class StationSeed extends Seeder
     public function run()
     {
         factory(App\Station::class, 7)->create()->each(function ($station) {
-            $r =  rand(0, 1);
-            if ($r == 0) { // se asumira que es inactiva
-                $station->activo_estacion = 'n';
-                $station->save();
-            }else{
-                $station->save();
-            }
+           $station->save();
+
             //   $illness->vaccines()->attach([10, 11]);
         });
         // esto es para generar los aleatorios entre troncal y estacion

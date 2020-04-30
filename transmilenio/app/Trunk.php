@@ -20,7 +20,7 @@ class Trunk extends Model
         return $this->belongsToMany('App\Station', 'troncal_estacion', 'id_troncal', 'id_estacion');
     }
 
-    public function  portals(){
-        return $this->hasMany('App\Portal', 'id_troncal', 'id_portal');
+    public function portals(){
+        return $this->hasMany('App\Portal', 'id_troncal', 'id_troncal');
     }
 }
