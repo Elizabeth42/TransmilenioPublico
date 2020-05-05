@@ -7,6 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Platform::class, function (Faker $faker) {
     return [
+        'id_portal' => 1,
         'numero_plataforma' => $faker->numberBetween(1,99),
         'activo_plataforma'=> 'a'
     ];

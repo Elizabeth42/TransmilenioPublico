@@ -12,7 +12,7 @@ class TrunkSeed extends Seeder
     public function run()
     {
         factory(App\Trunk::class, 7)->create()->each(function ($trunk) {
-            $r =  rand(0, 1);
+
             $trunk->save();
 
         });

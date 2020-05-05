@@ -16,7 +16,11 @@ class Station extends Model
         return $this->trunks()->whereRaw('"troncal_estacion"."id_troncal"='.$troncal)->count() > 0;
     }
 
-    public function trunks(){
-        return $this->belongsToMany('App\Trunk', 'troncal_estacion', 'id_estacion', 'id_troncal');
+    public function trunk_stations(){
+        return $this->hasMany('App\TrunkStation', 'id_estacion', 'id_estacion');
     }
+
+//    public function trunks(){
+//        return $this->belongsToMany('App\Trunk', 'troncal_estacion', 'id_estacion', 'id_troncal');
+//    }
 }

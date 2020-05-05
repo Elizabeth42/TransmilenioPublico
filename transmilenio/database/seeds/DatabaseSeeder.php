@@ -12,8 +12,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-      // $this->call(TrunkSeed::class);
+       //$this->call(TrunkSeed::class);
        //$this->call(StationSeed::class);
+       //$this->call(TrunkStationSeed::class);
        //$this->call(PortalSeed::class);
        $this->call(PlatformSeed::class);
         //$this->call(WagonSeed::class); // no funciona por elemento no encontrado
