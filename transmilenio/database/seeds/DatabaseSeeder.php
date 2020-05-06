@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
        //$this->call(StationSeed::class);
        //$this->call(TrunkStationSeed::class);
        //$this->call(PortalSeed::class);
-       $this->call(PlatformSeed::class);
-        //$this->call(WagonSeed::class); // no funciona por elemento no encontrado
+       //$this->call(PlatformSeed::class);
+        $this->call(WagonSeed::class); // no funciona por elemento no encontrado
         //$this->call(RouteSeed::class); //Si funciona
     }
 }

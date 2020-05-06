@@ -14,10 +14,24 @@ class PlatformSeed extends Seeder
     public function run()
     {
         $portals = App\Portal::all();
-        factory(App\Platform::class, 7)->create()->each(function ($platform) use ($portals) {
+        factory(App\Platform::class, 5)->create()->each(function ($platform) use ($portals) {
             $random = $portals->random();
-            $platform->id_portal = $random->id_portal;
-            $platform->save();
+            $r = rand(0, 1);
+            // permitira establecer si sera una plataforma esta activa o uno inactiva
+            if($r==0){
+                $platform->activo_plataforma = 'n';
+            }else{
+                $platform->activo_plataforma = 'a';
+            }
+
+            // permitira validar si el portal  se encuentre activa
+            if ($random->activo_portal != 'n') {
+                $platform->id_portal = $random->id_portal;
+                $platform->save();
+            }else{
+                $platform->delete(); // si el portal se encuentra inactivo se borra el registro de la plataforma creada
+
+            }
         });
 
     }

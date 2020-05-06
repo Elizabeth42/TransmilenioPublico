@@ -17,4 +17,13 @@ class Portal extends Model
     public function  platforms(){
         return $this->hasMany('App\Platform', 'id_portal', 'id_portal');
     }
+    // permitira activar o desactivar las plataformas asociadas a este portal
+    public function enable($enable){
+        $this->activo_portal = $enable;
+        $this->save();
+        $platforms = $this->platforms()->get();
+        foreach ($platforms as $platform) {
+            $platform->enable($enable);
+        }
+    }
 }

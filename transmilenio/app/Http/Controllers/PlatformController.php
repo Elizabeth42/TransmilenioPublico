@@ -44,51 +44,31 @@ class PlatformController extends Controller
         if ($validator->fails()) {
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
-        //si estacion no es nulo significa que se asigna a una estacion y toca realizar las validaciones necesarias
-        if ($request->input('id_estacion') != 0) {
-            $station = Station::find($request->input('id_estacion'));
-            // garantiza que la estacion exista
-            if (!isset($station))
-                return response('{"error": "La estacion no existe"}', 300)->header('Content-Type', 'application/json');
-            $trunks = $station->trunks()->get();
-            // esto es para garantizar que la estacion tenga asociada una troncal)
-            if ($trunks->Count() == 0)
-                return response('{"error": "la estacion no puede ser asignada pues no se le ha asignado una troncal"}', 300)->header('Content-Type', 'application/json');
-            //ahora es necesario validar que el id de la troncal que se ingreso si corresponda a la estacion
-            $id_trunk = $request->input('id_troncal');
-            if ($trunks->reject(function ($trunk) use ($id_trunk) { return $trunk->id_troncal != $id_trunk;})->count() != 1)
-                return response('{"error": "la troncal establecida no corresponde a la estacion seleccionada"}', 300)->header('Content-Type', 'application/json');
-            // esto es para garantizar  que no haya  ya una plataforma asociada a dicha estacion
-            if (Platform::whereNotNull('ID_ESTACION')->where('ID_ESTACION','=',$station->id_estacion)->count() > 0 )
-                return response('{"error": "ya hay una plataforma asociada a la estacion seleccionada y por estacion solo puede haber una plataforma"}', 300)->header('Content-Type', 'application/json');
-            //esto es para garantizar que la estacion se encuentre activa
-            if ($station->activo_estacion=='n')
-                return response('{"error": "La estacion no se encuentra activa por tanto no se le puede asignar una plataforma"}', 300)->header('Content-Type', 'application/json');
-            $created = Platform::create($validator->validated());
-            return response('{ "id": ' . $created->id_portal . '}', 200)->header('Content-Type', 'application/json');
-
-        }else{
             $portal = Portal::find($request->input('id_portal'));
-            // garantiza que la estacion exista
+            // garantiza que el portal exista
             if (!isset($portal))
                 return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
+            // para validar que el portal al que se desea asignar se encuentre activo
             if ($portal->activo_portal =='n')
                 return response('{"error": "El portal no se encuentra activo por tanto no se le puede asignar una plataforma"}', 300)->header('Content-Type', 'application/json');
             $created = Platform::create($validator->validated());
             return response('{ "id": ' . $created->id_portal . '}', 200)->header('Content-Type', 'application/json');
-        }
+
     }
 
 
         /**
      * Display the specified resource.
      *
-     * @param  \App\Platform  $platform
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Platform $platform)
+    public function show($id)
     {
-        //
+        $platform = Platform::find($id);
+        if (!isset($platform))
+            return response('{"error": "La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+        return response($platform->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -106,12 +86,29 @@ class PlatformController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Platform  $platform
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Platform $platform)
+    public function update(Request $request, $id)
     {
-        //
+        $platform = Portal::find($id);
+        if (!isset($platform))
+            return response('{"error": "La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+        $validator = $this->custom_validator($request->all());
+        if ($validator->fails())
+            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        $portal = Portal::find($request->input('id_portal'));
+        // garantiza que el portal exista
+        if (!isset($portal))
+            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
+        // para validar que el portal al que se desea asignar se encuentre activo
+        if ($portal->activo_portal =='n')
+            return response('{"error": "El portal no se encuentra activo por tanto no se le puede asignar una plataforma"}', 300)->header('Content-Type', 'application/json');
+        $updated = $platform->update($validator->validated());
+        if ($updated)
+            return response($platform->toJson(), 200)->header('Content-Type', 'application/json');
+        else
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -130,9 +127,8 @@ class PlatformController extends Controller
         return Validator::make($data,
             ['numero_plataforma' => 'required|max:2',
                 'activo_plataforma' => 'required|in:a,n',
-                'id_troncal'=>'integer',
                 'id_portal'=>'integer',
-                'id_estacion'=>'integer',
+
             ],
             ['required' => ' El :attribute es obligatorio.',
                 'max' => ' El :attribute no debe exceder los :max caracteres.',

@@ -18,4 +18,14 @@ class TrunkStation extends Model
     public function  stations(){
         return $this->belongsTo('App\Station', $ownerKey='id_estacion');
     }
+
+    // permite activar o desactivar los dependientes de troncales estacion, en este caso los vagones
+    public function enable($enable){
+        $this->activo_troncal_estacion = $enable;
+        $this->save();
+        $wagons = $this->wagons()->get();
+        foreach ($wagons as $wagon) {
+            $wagon->enable($enable);
+        }
+    }
 }

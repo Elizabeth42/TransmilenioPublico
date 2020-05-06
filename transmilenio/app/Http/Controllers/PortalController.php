@@ -96,6 +96,9 @@ class PortalController extends Controller
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        // permite validar que la troncal a la cual se le esta asignando este portal se encuentre activa
+        if ($trunk->activo_troncal=='n')
+            return response('{"error": "La troncal no se encuentra activa por tanto no se le puede asignar una troncal"}', 300)->header('Content-Type', 'application/json');
         $updated = $portal->update($validator->validated());
         if ($updated)
             return response($portal->toJson(), 200)->header('Content-Type', 'application/json');

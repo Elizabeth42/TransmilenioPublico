@@ -11,9 +11,14 @@ class TrunkSeed extends Seeder
      */
     public function run()
     {
-        factory(App\Trunk::class, 7)->create()->each(function ($trunk) {
-
-            $trunk->save();
+        factory(App\Trunk::class, 3)->create()->each(function ($trunk) {
+            $r =  rand(0, 1);
+            if($r==0){
+                $trunk->activo_troncal = 'n';
+                $trunk->save();
+            }else{
+                $trunk->save();
+            }
 
         });
     }

@@ -9,7 +9,7 @@ $factory->define(Portal::class, function (Faker $faker) {
 
     return [
         'nombre_portal' => $faker->text($maxNbChars = 50),
-        'id_troncal' => 1,
+        'id_troncal' => App\Trunk::all()[0]->id_troncal,
         'activo_portal'=> 'a'
     ];
 

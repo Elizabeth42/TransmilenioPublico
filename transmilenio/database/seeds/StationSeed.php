@@ -11,8 +11,14 @@ class StationSeed extends Seeder
      */
     public function run()
     {
-        factory(App\Station::class, 7)->create()->each(function ($station) {
-           $station->save();
+        factory(App\Station::class, 3)->create()->each(function ($station) {
+            $r =  rand(0, 1);
+            if($r==0) {
+                $station->activo_estacion = 'n';
+                $station->save();
+            }else{
+                $station->save();
+            }
         });
     }
 }

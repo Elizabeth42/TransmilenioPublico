@@ -13,14 +13,20 @@ class Station extends Model
 
     public function hasTrunk(int $troncal)
     {
-        return $this->trunks()->whereRaw('"troncal_estacion"."id_troncal"='.$troncal)->count() > 0;
+        return $this->trunk_stations()->whereRaw('"TRONCAL_ESTACION"."ID_TRONCAL"='.$troncal)->count() > 0;
     }
 
     public function trunk_stations(){
         return $this->hasMany('App\TrunkStation', 'id_estacion', 'id_estacion');
     }
 
-//    public function trunks(){
-//        return $this->belongsToMany('App\Trunk', 'troncal_estacion', 'id_estacion', 'id_troncal');
-//    }
+    // permitira activar o desactivar todos los dependientes de estacion en este caso troncal estacion
+    public function enable($enable){
+        $this->activo_estacion = $enable;
+        $this->save();
+        $trunks_stations = $this->trunk_stations()->get();
+        foreach ($trunks_stations as $trunk_station) {
+            $trunk_station->enable($enable);
+        }
+    }
 }

@@ -81,6 +81,10 @@ class TrunkController extends Controller
     public function update(Request $request, $id)
     {
         $trunk = Trunk::find($id);
+        Log::info(print_r('------------------------------------------------------------------------------------------------------------------'));
+        if ($trunk->isDirty('activo_troncal')){
+            Log::info(print_r('se altero el active de troncal'));
+        }
         if (!isset($trunk))
             return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
@@ -122,10 +126,10 @@ class TrunkController extends Controller
     {
         return Validator::make($data,
             [
-                'nombre_troncal' => 'required|max:50',
-                'letra_troncal'=> 'required|max:2',
-                'color_troncal' => 'required|max:7',
-                'activo_troncal' => 'required|in:a,n'
+                'nombre_troncal' => 'max:50',
+                'letra_troncal'=> 'max:2',
+                'color_troncal' => 'max:7',
+                'activo_troncal' => 'in:a,n'
             ],
             ['max' => ' El :attribute no debe exceder los :max caracteres.',
              'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo'
