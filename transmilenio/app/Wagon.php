@@ -15,5 +15,17 @@ class Wagon extends Model
         return $this->belongsTo('App\Platform', $ownerKey='id_plataforma');
     }
 
+    public function trunk_station(){
+        return $this->belongsTo('App\TrunkStation', 'id_troncal_estacion', 'id_troncal_estacion');
+    }
+
+    public function enable($enable){
+        $this->activo_vagon = $enable;
+        $this->save();
+        /*$wagons = $this->wagons()->get();
+        foreach ($wagons as $wagon) {
+            $wagon->enable($enable);
+        }*/
+    }
 
 }

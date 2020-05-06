@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\Boolean;
 
 class Trunk extends Model

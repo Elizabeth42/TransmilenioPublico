@@ -15,7 +15,7 @@ class TrunkStationSeed extends Seeder
         // esto es para generar los aleatorios entre troncal y estacion
         $trunks = App\Trunk::all();
         $stations = App\Station::all();
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $randomS = $stations->random();
             $randomT = $trunks->random();
             $trunkStation = new App\TrunkStation();

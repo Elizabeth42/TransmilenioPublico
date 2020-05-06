@@ -17,7 +17,11 @@ class TrunkController extends Controller
      */
     public function index()
     {
-        return response(Trunk::all()->toJson(), 200)->header('Content-Type', 'application/json');
+        if(request()->header('active')) {
+            $active = request()->header('active');
+            return Trunk::where('activo_troncal', '=', $active)->get();
+        }
+        return Trunk::all();
     }
 
     /**
@@ -81,16 +85,16 @@ class TrunkController extends Controller
     public function update(Request $request, $id)
     {
         $trunk = Trunk::find($id);
-        Log::info(print_r('------------------------------------------------------------------------------------------------------------------'));
-        if ($trunk->isDirty('activo_troncal')){
-            Log::info(print_r('se altero el active de troncal'));
-        }
         if (!isset($trunk))
             return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        Log::info('------------------------------------------------------------------------------------------------------------------');
         $updated = $trunk->update($validator->validated());
+        if ($trunk->wasChanged('activo_troncal')){
+            $trunk->enable($request->input('activo_troncal'));
+        }
         if ($updated)
             return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
         else
@@ -99,7 +103,7 @@ class TrunkController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
+     *pe
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
