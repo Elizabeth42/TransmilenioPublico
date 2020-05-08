@@ -19,6 +19,15 @@ class Wagon extends Model
         return $this->belongsTo('App\TrunkStation', 'id_troncal_estacion', 'id_troncal_estacion');
     }
 
+    //permitira saber si un id de ruta se encuentra asociada al vagon
+    public function hasRoute(int $ruta)
+    {
+        return $this->routes()->whereRaw('"PARADAS"."ID_RUTA"='.$ruta)->count() > 0;
+    }
+
+    public function routes(){
+        return $this->belongsToMany('App\Route', 'paradas', 'id_vagon', 'id_ruta');
+    }
     public function enable($enable){
         $this->activo_vagon = $enable;
         $this->save();

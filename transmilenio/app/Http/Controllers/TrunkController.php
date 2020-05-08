@@ -90,7 +90,6 @@ class TrunkController extends Controller
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        Log::info('------------------------------------------------------------------------------------------------------------------');
         $updated = $trunk->update($validator->validated());
         if ($trunk->wasChanged('activo_troncal')){
             $trunk->enable($request->input('activo_troncal'));

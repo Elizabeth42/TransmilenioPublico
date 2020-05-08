@@ -18,7 +18,11 @@ class StationController extends Controller
      */
     public function index()
     {
-        return response(Station::all()->toJson(), 200)->header('Content-Type', 'application/json');
+        if(request()->header('active')) {
+            $active = request()->header('active');
+            return Station::where('activo_estacion', '=', $active)->get();
+        }
+        return Station::all();
     }
 
     /**
@@ -89,6 +93,9 @@ class StationController extends Controller
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
         $updated = $station->update($validator->validated());
+        if ($station->wasChanged('activo_estacion')){
+            $station->enable($request->input('activo_estacion'));
+        }
         if ($updated)
             return response($station->toJson(), 200)->header('Content-Type', 'application/json');
         else
@@ -122,8 +129,8 @@ class StationController extends Controller
     private function custom_validator($data)
     {
         return Validator::make($data,
-            ['nombre_estacion' => 'required|max:50',
-                'activo_estacion' => 'required|in:a,n'
+            ['nombre_estacion' => 'max:50',
+                'activo_estacion' => 'in:a,n'
             ],
             ['max' => ' El :attribute no debe exceder los :max caracteres.',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo']

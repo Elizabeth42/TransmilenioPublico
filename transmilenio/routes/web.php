@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('trunk', 'TrunkController');
 Route::resource('station', 'StationController');
-Route::resource('trunkStation', 'TrunkStationController');
+Route::resource('trunkStation', 'TrunkStationController')->except('PATCH');
 //Route::get('trunk/{trunk}/station', 'StationTrunkController@get_stations_from_trunk');
 //Route::post('trunk/{trunk}/station', 'StationTrunkController@add_stations_to_trunk');
 //Route::put('trunk/{trunk}/station', 'StationTrunkController@delete_station_to_trunk');

@@ -7,6 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Route::class, function (Faker $faker) {
     return [
-        'codigo_ruta' => $faker->numberBetween(1,999)
+        'codigo_ruta' => $faker->text($maxNbChars = 5),
+        'activo_ruta'=> 'a'
     ];
 });
