@@ -31,10 +31,9 @@ class Wagon extends Model
     public function enable($enable){
         $this->activo_vagon = $enable;
         $this->save();
-        /*$wagons = $this->wagons()->get();
-        foreach ($wagons as $wagon) {
-            $wagon->enable($enable);
-        }*/
+        $routes = $this->routes()->get();
+        foreach($routes as $route){
+            $this->routes()->updateExistingPivot($route->id_ruta, ['estado_parada'=>$enable]);
+        }
     }
-
 }

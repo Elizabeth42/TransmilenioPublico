@@ -18,4 +18,14 @@ class Bus extends Model
     public function timeRouteAssignment(){
         return $this->hasMany('App\TimeRouteAssignment', 'id_bus', 'id_bus');
     }
+
+    // permitira activar o desactivar todos los dependientes de bus en este caso TimeRouteAssignment
+    public function enable($enable){
+        $this->activo_bus = $enable;
+        $this->save();
+        $assignaments = $this->timeRouteAssignment()->get();
+        foreach ($assignaments as $assignament) {
+            $assignament->enable($enable);
+        }
+    }
 }

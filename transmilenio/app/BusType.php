@@ -14,4 +14,14 @@ class BusType extends Model
     public function bus(){
         return $this->hasMany('App\Bus', 'id_tipo_bus', 'id_tipo_bus');
     }
+
+    // permitira activar o desactivar todos los dependientes de busType en este caso bus
+    public function enable($enable){
+        $this->activo_tipo_bus = $enable;
+        $this->save();
+        $buses = $this->bus()->get();
+        foreach ($buses as $bus) {
+            $bus->enable($enable);
+        }
+    }
 }
