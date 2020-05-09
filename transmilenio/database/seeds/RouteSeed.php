@@ -30,8 +30,6 @@ class RouteSeed extends Seeder
             $randomR = $routes->random();
             // valida que el vagon, la ruta esten activas y que el vagon no tenga asignada la ruta
             if ($randomW->activo_vagon=='a' && $randomR->activo_ruta = 'a'&& !$randomR->hasWagon($randomW->id_vagon)){
-                Log::info('------------------------------------------------------------');
-                Log::info('el valor de vagon es: '.$randomW->id_vagon.' - el valor de la ruta es: '.$randomR->id_ruta);
                 $enable = rand(0,1);
                 $state_parada = $enable == 0 ? 'n' : 'a';
                 $last_bus_stop = null;

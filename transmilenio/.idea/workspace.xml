@@ -2,16 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="316a3bb9-0f49-4b15-886e-71f608d22ffa" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/transmilenio.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/transmilenio.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/StationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/StationController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TrunkController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TrunkController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TrunkStationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TrunkStationController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Route.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Route.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Wagon.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Wagon.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/factories/RouteFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/factories/RouteFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/seeds/RouteSeed.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/RouteSeed.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,6 +136,7 @@
       <path value="$PROJECT_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
       <path value="$PROJECT_DIR$/vendor/yajra/laravel-oci8" />
       <path value="$PROJECT_DIR$/vendor/yajra/laravel-pdo-via-oci8" />
+      <path value="$PROJECT_DIR$/vendor/pelmered/fake-car" />
     </include_path>
   </component>
   <component name="ProjectId" id="1asDcsxvScPLbeGdm4KGFPZRvNP" />
@@ -217,7 +216,9 @@
       <workItem from="1588621827010" duration="3550000" />
       <workItem from="1588707191291" duration="31300000" />
       <workItem from="1588781696544" duration="19840000" />
-      <workItem from="1588867953870" duration="19954000" />
+      <workItem from="1588867953870" duration="20569000" />
+      <workItem from="1588952519170" duration="6348000" />
+      <workItem from="1588969058639" duration="18128000" />
     </task>
     <servers />
   </component>
@@ -249,22 +250,22 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1587845396210" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1588904645045">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1588917583977">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588904645045" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1588904645045">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588917583977" />
+    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1588917583977">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1588904645045" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1588904645045">
+    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1588917583977" />
+    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1588917583977">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1588904645045" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1588904645045">
+    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1588917583977" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1588917583977">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1588904645045" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1588917583977" />
     <state x="277" y="55" key="SettingsEditor" timestamp="1588192438343">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -273,18 +274,18 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1536.824@0.0.1536.824" timestamp="1588884861073" />
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1588867966781">
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1588969069875">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1588867966781" />
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1588969069875" />
     <state x="187" y="83" width="1204" height="512" key="dock-window-1" timestamp="1587684515859">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="187" y="83" width="1204" height="512" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1587684515859" />
-    <state x="444" y="10" width="648" height="804" key="find.popup" timestamp="1588885072631">
+    <state x="444" y="10" width="648" height="804" key="find.popup" timestamp="1588969322611">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="444" y="10" width="648" height="804" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1588885072631" />
+    <state x="444" y="10" width="648" height="804" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1588969322611" />
     <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1588899080426">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

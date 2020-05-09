@@ -18,7 +18,10 @@ class DatabaseSeeder extends Seeder
        //$this->call(PortalSeed::class);
        //$this->call(PlatformSeed::class);
         //$this->call(WagonSeed::class);
-        $this->call(RouteSeed::class);
-
+        //$this->call(RouteSeed::class);
+        //$this->call(BusTypeSeed::class);
+        //$this->call(BusSeed::class);
+        //$this->call(ScheduleSeed::class);
+        $this->call(TimeRouteAssignmentSeeder::class);
     }
 }

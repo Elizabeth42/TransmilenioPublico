@@ -97,6 +97,7 @@
       <path value="$PROJECT_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
       <path value="$PROJECT_DIR$/vendor/yajra/laravel-oci8" />
       <path value="$PROJECT_DIR$/vendor/yajra/laravel-pdo-via-oci8" />
+      <path value="$PROJECT_DIR$/vendor/pelmered/fake-car" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

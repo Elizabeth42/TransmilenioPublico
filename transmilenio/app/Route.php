@@ -20,4 +20,8 @@ class Route extends Model
     public function wagons(){
         return $this->belongsToMany('App\Wagon', 'paradas', 'id_ruta', 'id_vagon');
     }
+
+    public function timeRouteAssignment(){
+        return $this->hasMany('App\TimeRouteAssignment', 'id_ruta', 'id_ruta');
+    }
 }
