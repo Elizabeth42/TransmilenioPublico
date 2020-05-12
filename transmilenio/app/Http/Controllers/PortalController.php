@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class PortalController extends Controller
@@ -18,7 +19,12 @@ class PortalController extends Controller
      */
     public function index()
     {
-        return response(Portal::all()->toJson(), 200)->header('Content-Type', 'application/json');
+        if(request()->header('active')) {
+            $active = request()->header('active');
+            return Portal::where('activo_portal', '=', $active)->get();
+        }
+        return Portal::all();
+      //  return response(Portal::all()->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -44,13 +50,6 @@ class PortalController extends Controller
         if ($validator->fails()) {
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
-    // permitira validar si el id de la troncal existe
-        $trunk = Trunk::find($request->input('id_troncal'));
-        if (!isset($trunk))
-            return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
-    // permite validar que la troncal a la cual se le esta asignando este portal se encuentre activa
-        if ($trunk->activo_troncal=='n')
-            return response('{"error": "La troncal no se encuentra activa por tanto no se le puede asignar una troncal"}', 300)->header('Content-Type', 'application/json');
     //se encargara de crear el portal con la informacion del json
         $created = Portal::create($validator->validated());
         return response('{ "id": ' . $created->id_portal . '}', 200)->header('Content-Type', 'application/json');
@@ -96,10 +95,12 @@ class PortalController extends Controller
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        // permite validar que la troncal a la cual se le esta asignando este portal se encuentre activa
-        if ($trunk->activo_troncal=='n')
-            return response('{"error": "La troncal no se encuentra activa por tanto no se le puede asignar una troncal"}', 300)->header('Content-Type', 'application/json');
+
         $updated = $portal->update($validator->validated());
+        //esto es para establecer si los hijos se activan o inactivan
+        if ($portal->wasChanged('activo_portal')){
+            $portal->enable($request->input('activo_portal'));
+        }
         if ($updated)
             return response($portal->toJson(), 200)->header('Content-Type', 'application/json');
         else
@@ -114,20 +115,20 @@ class PortalController extends Controller
      */
     public function destroy($id)
     {
-        $portal = Portal::find($id);
-        if (!isset($portal))
-            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
-        if ($portal->platforms()->count() > 0)
-            return response('{ "error": "Hay una plataforma que tiene este portal asignado"}', 300)->header('Content-Type', 'application/json');
-        try {
-            $deleted = $portal->delete();
-        } catch (Exception $e) {
-            $deleted = false;
-        }
-        if ($deleted)
-            return response('{ "success": "El portal fue eliminado"}', 200)->header('Content-Type', 'application/json');
-        else
-            return response('{ "error": "El portal no pudo ser eliminado"}', 300)->header('Content-Type', 'application/json');
+//        $portal = Portal::find($id);
+//        if (!isset($portal))
+//            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
+//        if ($portal->platforms()->count() > 0)
+//            return response('{ "error": "Hay una plataforma que tiene este portal asignado"}', 300)->header('Content-Type', 'application/json');
+//        try {
+//            $deleted = $portal->delete();
+//        } catch (Exception $e) {
+//            $deleted = false;
+//        }
+//        if ($deleted)
+//            return response('{ "success": "El portal fue eliminado"}', 200)->header('Content-Type', 'application/json');
+//        else
+//            return response('{ "error": "El portal no pudo ser eliminado"}', 300)->header('Content-Type', 'application/json');
     }
 
     private function custom_validator($data)
@@ -135,9 +136,15 @@ class PortalController extends Controller
         return Validator::make($data,
             ['nombre_portal' => 'required|max:50',
                 'activo_portal' => 'required|in:a,n',
-                'id_troncal'=>'required'
+                'id_troncal'=>['required',
+                    Rule::exists('troncales', '')->where(function ($query) {
+                        $query->where('activo_troncal', 'a');
+                    })
+                ],
             ],
             ['max' => ' El :attribute no debe exceder los :max caracteres.',
+                'required'=> 'El :attribute es obligatorio',
+                'id_troncal.exists'=>'La troncal no existe o no esta activa',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo']
         );
     }

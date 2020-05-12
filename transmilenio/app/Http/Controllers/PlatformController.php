@@ -8,6 +8,7 @@ use App\Station;
 use App\Trunk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PlatformController extends Controller
 {
@@ -18,7 +19,12 @@ class PlatformController extends Controller
      */
     public function index()
     {
-        return response(Platform::all()->toJson(), 200)->header('Content-Type', 'application/json');
+        if(request()->header('active')) {
+            $active = request()->header('active');
+            return Platform::where('activo_plataforma', '=', $active)->get();
+        }
+        return Platform::all();
+     //   return response(Platform::all()->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -44,16 +50,8 @@ class PlatformController extends Controller
         if ($validator->fails()) {
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
-            $portal = Portal::find($request->input('id_portal'));
-            // garantiza que el portal exista
-            if (!isset($portal))
-                return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
-            // para validar que el portal al que se desea asignar se encuentre activo
-            if ($portal->activo_portal =='n')
-                return response('{"error": "El portal no se encuentra activo por tanto no se le puede asignar una plataforma"}', 300)->header('Content-Type', 'application/json');
-            $created = Platform::create($validator->validated());
-            return response('{ "id": ' . $created->id_portal . '}', 200)->header('Content-Type', 'application/json');
-
+        $created = Platform::create($validator->validated());
+        return response('{ "id": ' . $created->id_plataforma . '}', 200)->header('Content-Type', 'application/json');
     }
 
 
@@ -91,20 +89,18 @@ class PlatformController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $platform = Portal::find($id);
+        $platform = Platform::find($id);
         if (!isset($platform))
             return response('{"error": "La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        $portal = Portal::find($request->input('id_portal'));
-        // garantiza que el portal exista
-        if (!isset($portal))
-            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
-        // para validar que el portal al que se desea asignar se encuentre activo
-        if ($portal->activo_portal =='n')
-            return response('{"error": "El portal no se encuentra activo por tanto no se le puede asignar una plataforma"}', 300)->header('Content-Type', 'application/json');
+
         $updated = $platform->update($validator->validated());
+        //esto es para establecer si los hijos se activan o inactivan
+        if ($platform->wasChanged('activo_plataforma')){
+            $platform->enable($request->input('activo_plataforma'));
+        }
         if ($updated)
             return response($platform->toJson(), 200)->header('Content-Type', 'application/json');
         else
@@ -127,11 +123,16 @@ class PlatformController extends Controller
         return Validator::make($data,
             ['numero_plataforma' => 'required|max:2',
                 'activo_plataforma' => 'required|in:a,n',
-                'id_portal'=>'integer',
-
+                //con esto valido que la troncal sea obligatoria, que la troncal exista y que se encuentre activa
+                'id_portal'=>['required','integer',
+                    Rule::exists('portales', '')->where(function ($query) {
+                        $query->where('activo_portal', 'a');
+                    })
+                ]
             ],
             ['required' => ' El :attribute es obligatorio.',
                 'max' => ' El :attribute no debe exceder los :max caracteres.',
+                'id_portal.exists'=>'El portal no existe o no esta activa',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo',
                 'integer'=> 'El :attribute debe ser de tipo entero']
         );

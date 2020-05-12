@@ -129,13 +129,15 @@ class TrunkController extends Controller
     {
         return Validator::make($data,
             [
-                'nombre_troncal' => 'max:50',
-                'letra_troncal'=> 'max:2',
-                'color_troncal' => 'max:7',
-                'activo_troncal' => 'in:a,n'
+                'nombre_troncal' => 'required|max:50',
+                'letra_troncal'=> 'required|max:2|unique:App\Trunk',
+                'color_troncal' => 'required|max:7',
+                'activo_troncal' => 'required|in:a,n'
             ],
             ['max' => ' El :attribute no debe exceder los :max caracteres.',
-             'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo'
+             'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo',
+             'required'=> 'El :attribute debe ser obligatorio',
+             'unique'=> 'El :attribute debe ser unico'
             ]
         );
     }

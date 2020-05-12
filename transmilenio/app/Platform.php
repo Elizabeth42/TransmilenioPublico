@@ -17,6 +17,9 @@ class Platform extends Model
     public function  Portals(){
         return $this->belongsTo('App\Portal', $ownerKey='id_portal');
     }
+    public function  hasNumberWagon(int $numeroVagon){
+        return $this->wagons()->where('numero_vagon','=',$numeroVagon)->count() >0;
+    }
 
     // permitira activar o desactivar los vagones a partir del estado de la plataforma
     public function enable($enable){

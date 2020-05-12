@@ -47,29 +47,14 @@ class TrunkStationController extends Controller
     {
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $validator = $this->custom_validator($request->all());
-        if ($validator->fails()) {
+        if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        }
-        //si estacion no es nulo significa que se asigna a una troncal y toca realizar las validaciones necesarias
-      //  if ($request->input('id_estacion') != 0) {
-            $station = Station::find($request->input('id_estacion'));
-            // garantiza que la estacion exista
-            Log::info(print_r('la entrada sera: '.$request->input('id_troncal_estacion'),true));
-            if (!isset($station))
-                return response('{"error": "La estacion no existe"}', 300)->header('Content-Type', 'application/json');
-            $troncal = Trunk::find($request->input('id_troncal'));
-            // garantiza que la troncal exista
-            if (!isset($troncal))
-                return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
-            //esto es para garantizar que la estacion se encuentre activa
-            if ($station->activo_estacion=='n')
-                return response('{"error": "La estacion no se encuentra activa por tanto no puede ser asignada a una troncal_estacion"}', 300)->header('Content-Type', 'application/json');
-            //esto es para garantizar que la troncal se encuentra activa
-            if ($troncal->activo_troncal=='n')
-                return response('{"error": "La troncal no se encuentra activa por tanto no puede ser asignada a una troncal_estacion"}', 300)->header('Content-Type', 'application/json');
-            //finalmente se requiere garantizar que esa troncal no tenga asignada ya esa estacion pues ambas deben ser unicas
-            if ($station->hasTrunk($troncal->id_troncal))
-                return response('{"error": "la estacion ya tiene esa troncal asociada"}', 300)->header('Content-Type', 'application/json');
+        $station = Station::find($request->input('id_estacion'));
+        $troncal = Trunk::find($request->input('id_troncal'));
+
+        //finalmente se requiere garantizar que esa troncal no tenga asignada ya esa estacion pues ambas deben ser unicas
+        if ($station->hasTrunk($troncal->id_troncal))
+            return response('{"error": "la estacion ya tiene esa troncal asociada"}', 300)->header('Content-Type', 'application/json');
 
             // se procede con la creacion de la troncal estacion
             $created = TrunkStation::create($validator->validated());
@@ -120,7 +105,7 @@ class TrunkStationController extends Controller
         $station = Station::find($request->input('id_estacion'));
         $troncal = Trunk::find($request->input('id_troncal'));
 
-        //finalmente se requiere garantizar que esa troncal no tenga asignada ya esa estacion pues ambas deben ser unicas
+        //se requiere garantizar que esa troncal no tenga asignada ya esa estacion pues ambas deben ser unicas
         if ($station->hasTrunk($troncal->id_troncal))
             return response('{"error": "la estacion ya tiene esa troncal asociada"}', 300)->header('Content-Type', 'application/json');
 
@@ -151,12 +136,14 @@ class TrunkStationController extends Controller
     private function custom_validator($data)
     {
         return Validator::make($data,
-            ['activo_troncal_estacion' => 'in:a,n',
+            ['activo_troncal_estacion' => 'required|in:a,n',
+                //con esto valido que la troncal sea obligatoria, que la troncal exista y que se encuentre activa
                 'id_troncal'=>['required',
                     Rule::exists('troncales', '')->where(function ($query) {
                         $query->where('activo_troncal', 'a');
                     })
                 ],
+                //con esto valido que la estacion sea obligatoria, que la estacion exista y que se encuentre activa
                 'id_estacion'=>['required',
                     Rule::exists('estaciones')->where(function ($query) {
                         $query->where('activo_estacion', 'a');

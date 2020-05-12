@@ -21,3 +21,8 @@ Route::resource('trunkStation', 'TrunkStationController')->except('PATCH');
 //Route::put('trunk/{trunk}/station', 'StationTrunkController@delete_station_to_trunk');
 Route::resource('portal', 'PortalController');
 Route::resource('platform', 'PlatformController');
+Route::resource('wagon', 'WagonController');
+Route::resource('route', 'RouteController');
+Route::resource('busType', 'BusTypeController');
+Route::resource('schedule', 'ScheduleController');
+Route::resource('bus', 'BusController');

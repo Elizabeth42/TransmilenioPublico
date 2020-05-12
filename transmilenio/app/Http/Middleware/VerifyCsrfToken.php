@@ -22,6 +22,16 @@ class VerifyCsrfToken extends Middleware
         "portal/*",
         "platform",
         "platform/*",
+        "wagon",
+        "wagon/*",
+        "route",
+        "route/*",
+        "busType",
+        "busType/*",
+        "schedule",
+        "schedule/*",
+        "bus",
+        "bus/*"
         //
     ];
 }

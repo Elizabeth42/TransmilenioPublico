@@ -22,6 +22,9 @@ class TrunkStation extends Model
     public function  wagons(){
         return $this->hasMany('App\Wagon', 'id_troncal_estacion', 'id_troncal_estacion');
     }
+    public function  hasNumberWagon(int $numeroVagon){
+        return $this->wagons()->where('numero_vagon','=',$numeroVagon)->count() >0;
+    }
 
     // permite activar o desactivar los dependientes de troncales estacion, en este caso los vagones
     public function enable($enable){
