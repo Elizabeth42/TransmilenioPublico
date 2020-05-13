@@ -39,18 +39,14 @@ class StopController extends Controller
     public function add_wagons_to_route(Request $request, $id)
     {
         $route = Route::find($id);
-        Log::info('_____________________________________________________________________________________________');
         if (!isset($route))
             return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
-        Log::info('La ruta existe');
         if ($route->activo_ruta == 'n')
             return response('{"error": "La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
-        Log::info('La ruta esta activa');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         $paradas = $validator->validated()['wagons'];
-        Log::info('asignadas paradas');
         foreach ($paradas as $key => $parada) {
             $id_wagon = $parada['id_vagon'];
             $wagon = Wagon::find($id_wagon);
@@ -63,13 +59,6 @@ class StopController extends Controller
             // basicamente se pregunta que si existe un ultomo vagon y a partir de ello se asigna el orden
             $orden = isset($last_bus_stop) ? $last_bus_stop->pivot->orden+1 : 1;
             $route->wagons()->attach($id_wagon,['estado_parada'=>$parada['estado_parada'],'orden'=> $orden]);
-//            if (isset($last_bus_stop)){//verificar si existe un ultimo vagon asociado o sera el primero
-//                $route->wagons()->attach($id_wagon,['estado_parada'=>$wagon->state_parada,'orden'=> $last_bus_stop->pivot->orden+1]);
-//                return response('{"success": "Agregadas correctamente los vagones a la ruta"}', 200)->header('Content-Type', 'application/json');
-//            }else{
-//                $route->wagons()->attach($id_wagon,['estado_parada'=>$wagon->state_parada,'orden'=> 1]);
-//                return response('{"success": "Agregadas correctamente los vagones a la ruta"}', 200)->header('Content-Type', 'application/json');
-//            }
         }
         return response('{"success": "Agregadas correctamente los vagones a la ruta"}', 200)->header('Content-Type', 'application/json');
     }

@@ -120,8 +120,19 @@ class WagonController extends Controller
         if ($validator->fails()) {
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
-        $trunk_station = TrunkStation::find($request->input('id_troncal_estacion'));
-        $plataforma = Platform::find($request->input('id_plataforma'));
+
+        $vagon->fill($validator->validated());
+
+        //es necesario saber si se esta modificando de una plataforma a troncal_Estacion o viceversa
+        if($vagon->isDirty('id_troncal_estacion'))
+            $vagon->id_plataforma = null;
+        elseif ($vagon->isDirty('id_plataforma'))
+            $vagon->id_troncal_estacion=null;
+        //asignacion de troncal estacion y de plataforma
+        $trunk_station = TrunkStation::find($vagon->id_troncal_estacion);
+        $plataforma = Platform::find($vagon->id_plataforma);
+
+        //$plataforma = Platform::find($request->input('id_plataforma'));
         // permitira validar que solamente venga activo una de las foreign key
         if ($trunk_station!=null && $plataforma!=null){
             return response('{"error": "El vagon solamente puede ser asignado a una troncal_estacion o a una plataforma pero no a ambas"}', 300)->header('Content-Type', 'application/json');
@@ -131,29 +142,31 @@ class WagonController extends Controller
             return response('{"error": "El vagon solamente necesita una troncal_estacion o una plataforma para ser asignado"}', 300)->header('Content-Type', 'application/json');
         }
         // en caso de que venga una troncal estacion
-        if ($trunk_station!=null && $vagon->wasChanged('numero_vagon')){
+        if ($trunk_station!=null && $vagon->isDirty('numero_vagon')){
             //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
             if ($trunk_station->hasNumberWagon($request->input('numero_vagon'))){
                 return response('{"error": "la troncal_estacion ya tiene ese numero de vagon asociado"}', 300)->header('Content-Type', 'application/json');
             }
         }
         // en caso de que venga una troncal estacion
-        if ($plataforma!=null && $vagon->wasChanged('numero_vagon')){
+        if ($plataforma!=null && $vagon->isDirty('numero_vagon')){
             //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
             if ($plataforma->hasNumberWagon($request->input('numero_vagon'))){
                 return response('{"error": "la plataforma ya tiene esa numero de vagon asociado"}', 300)->header('Content-Type', 'application/json');
             }
         }
-        // con esto ya validado se procede a la actualizacion
-        $updated = $vagon->update($validator->validated());
+
         //esto es para establecer si los hijos se activan o inactivan
-        if ($vagon->wasChanged('activo_vagon')){
+        if ($vagon->isDirty('activo_vagon')){
             $vagon->enable($request->input('activo_vagon'));
         }
-        if ($updated)
+        if ($vagon){
+            $vagon->save();
             return response($vagon->toJson(), 200)->header('Content-Type', 'application/json');
-        else
+        }else{
             return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
+
     }
 
     /**

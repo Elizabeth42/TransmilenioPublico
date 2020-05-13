@@ -36,7 +36,7 @@ class RouteSeed extends Seeder
                 // si ya hay vagones asociados a esa ruta verifique cual es el ultimo asignado
                 if($randomR->wagons()->count() > 0)
                     $last_bus_stop = $randomR->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
-                if (isset($last_bus_stop)){//verificar si existe un ultimo vagon asociado o sera el primero
+                if (isset($last_bus_stop)){//esto es para verificar si existe una ultima parada para asignar una nueva o crear la primera
                     $randomR->wagons()->attach($randomW->id_vagon,['estado_parada'=>$state_parada,'orden'=> $last_bus_stop->pivot->orden+1]);
                 }else{
                     $randomR->wagons()->attach($randomW->id_vagon,['estado_parada'=>$state_parada,'orden'=> 1]);

@@ -29,4 +29,5 @@ Route::put('route/{route}/wagon', 'StopController@modify_wagons_to_route');
 Route::resource('busType', 'BusTypeController');
 Route::resource('schedule', 'ScheduleController');
 Route::resource('bus', 'BusController');
+Route::resource('assignment', 'TimeRouteAssignmentController');
 
