@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -95,21 +96,24 @@ class BusController extends Controller
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        //peermitira asignar nuevos valores al bus seleccionado
+        $bus->fill($validator->validated());
         // si fue cambiada la placa del bus valide si la misma ya se encuentra registrada
-        if ($bus->wasChanged('placabus')){
+        if ($bus->isDirty('placabus')){ // el isDirty permite analizar si el atributo cambio desde la ultima carga del modelo
             if($bus->where('placabus','=',$request->input('placabus'))->count()>0){
                 return response('{"error": "La placa del bus debe ser unica"}', 300)->header('Content-Type', 'application/json');
             }
         }
-        $updated = $bus->update($validator->validated());
         //esto es para establecer si los hijos se activan o inactivan
-        if ($bus->wasChanged('activo_bus')){
+        if ($bus->isDirty('activo_bus')){
             $bus->enable($request->input('activo_bus'));
         }
-        if ($updated)
+        if ($bus){
+            $bus->save();
             return response($bus->toJson(), 200)->header('Content-Type', 'application/json');
-        else
+        } else{
             return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
     /**

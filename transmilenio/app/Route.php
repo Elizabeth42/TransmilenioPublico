@@ -25,6 +25,7 @@ class Route extends Model
         return $this->hasMany('App\TimeRouteAssignment', 'id_ruta', 'id_ruta');
     }
 
+
     // permitira activar o desactivar todos los dependientes de rutas en este caso paradas y TimeRouteAssignment
     public function enable($enable){
         $this->activo_ruta = $enable;

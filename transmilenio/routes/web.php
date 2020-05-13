@@ -23,6 +23,10 @@ Route::resource('portal', 'PortalController');
 Route::resource('platform', 'PlatformController');
 Route::resource('wagon', 'WagonController');
 Route::resource('route', 'RouteController');
+Route::get('route/{route}/wagon', 'StopController@get_wagons_from_route');
+Route::post('route/{route}/wagon', 'StopController@add_wagons_to_route');
+Route::put('route/{route}/wagon', 'StopController@modify_wagons_to_route');
 Route::resource('busType', 'BusTypeController');
 Route::resource('schedule', 'ScheduleController');
 Route::resource('bus', 'BusController');
+
