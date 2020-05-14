@@ -113,7 +113,7 @@ class ScheduleController extends Controller
         return Validator::make($data,
             [
                 'horario_inicio' => 'required|date',
-                'horario_fin' => 'required|date',
+                'horario_fin' => 'required|date|after:horario_inicio',
                 'dia' => 'required|max:10',
                 'activo_horario' => 'required|in:a,n'
             ],

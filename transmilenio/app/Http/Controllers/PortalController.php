@@ -98,7 +98,7 @@ class PortalController extends Controller
 
         $updated = $portal->update($validator->validated());
         //esto es para establecer si los hijos se activan o inactivan
-        if ($portal->wasChanged('activo_portal')){
+        if ($portal->('activo_portal')){
             $portal->enable($request->input('activo_portal'));
         }
         if ($updated)
