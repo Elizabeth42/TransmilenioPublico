@@ -1,0 +1,17 @@
+TRUNKS
+ - POST - http://localhost:8000/trunk
+	{
+		"nombre_troncal"  : "troncal prueba",		
+		"letra_troncal"	:"as",
+		"color_troncal"	:"#ryoow",
+		"activo_troncal": "a"
+	}
+ - GET - http://localhost:8000/trunk - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/trunk/2 - El 2 hace referencia al id de la troncal que se desea buscar
+ - PUT - http://localhost:8000/trunk/2 - El 2 hace referencia al id de la troncal que se desea editar
+	{
+		"nombre_troncal"  : "Americas",		
+		"letra_troncal"	:"S",
+		"color_troncal"	:"#082863",
+		"activo_troncal": "n"
+	}
