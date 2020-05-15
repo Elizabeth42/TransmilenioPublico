@@ -1,17 +1,227 @@
 TRUNKS
  - POST - http://localhost:8000/trunk
 	{
-		"nombre_troncal"  : "troncal prueba",		
-		"letra_troncal"	:"as",
-		"color_troncal"	:"#ryoow",
+		"nombre_troncal"  : "Caracas",		
+		"letra_troncal"	:"A",
+		"color_troncal"	:"#082863",
 		"activo_troncal": "a"
 	}
  - GET - http://localhost:8000/trunk - HEADER-> active:a || active: n - si va sin active los lista todos
- - GET - http://localhost:8000/trunk/2 - El 2 hace referencia al id de la troncal que se desea buscar
- - PUT - http://localhost:8000/trunk/2 - El 2 hace referencia al id de la troncal que se desea editar
+ - GET - http://localhost:8000/trunk/2 - El 2 hace referencia al id de la TRONCAL que se desea buscar
+ - PUT - http://localhost:8000/trunk/2 - El 2 hace referencia al id de la TRONCAL que se desea editar
 	{
 		"nombre_troncal"  : "Americas",		
-		"letra_troncal"	:"S",
-		"color_troncal"	:"#082863",
+		"letra_troncal"	:"F",
+		"color_troncal"	:"#F40F0F",
 		"activo_troncal": "n"
 	}
+STATIONS
+- POST - http://localhost:8000/station
+	{
+		"nombre_estacion": "SENA",
+		"activo_estacion": "a"
+	}
+ - GET - http://localhost:8000/station - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/station/2 - El 2 hace referencia al id de la ESTACION que se desea buscar
+ - PUT - http://localhost:8000/station/2 - El 2 hace referencia al id de la ESTACION que se desea editar
+	{
+		"nombre_estacion": "Banderas",
+		"activo_estacion": "n"
+	}
+TRUNKSSTATIONS
+- POST - http://localhost:8000/trunkStation
+	{
+		"id_estacion": 6,
+		"id_troncal": 2,
+		"activo_troncal_estacion": "a"
+	}
+ - GET - http://localhost:8000/trunkStation - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/trunkStation/2 - El 2 hace referencia al id de la TRONCAL_ESTACION que se desea buscar
+ - PUT - http://localhost:8000/trunkStation/2 - El 2 hace referencia al id de la TRONCAL_ESTACION que se desea editar
+	{
+		"id_estacion": 6,
+		"id_troncal": 2,
+		"activo_troncal_estacion": "a"
+	}
+PORTALS
+- POST - http://localhost:8000/portal
+	{
+		"id_troncal": 11,
+		"nombre_portal": "PORTAL USME",
+		"activo_portal": "n"
+	}
+ - GET - http://localhost:8000/portal - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/portal/2 - El 2 hace referencia al id del PORTAL que se desea buscar
+ - PUT - http://localhost:8000/portal/2 - El 2 hace referencia al id del PORTAL que se desea editar
+	{
+		"id_troncal": 6,
+		"nombre_portal": "PORTAL DE LA 80",
+		"activo_portal": "a"
+	}
+PLATFORMS
+- POST - http://localhost:8000/platform
+	{
+		"id_portal": 56,
+		"numero_plataforma": 3,
+		"activo_plataforma": "a"
+	}
+ - GET - http://localhost:8000/platform - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/platform/2 - El 2 hace referencia al id de la PLATAFORMA que se desea buscar
+ - PUT - http://localhost:8000/platform/2 - El 2 hace referencia al id de la PLATAFORMA que se desea editar
+	{
+		"id_portal": 2,
+		"numero_plataforma": 4,
+		"activo_plataforma": "n"
+	}
+WAGONS
+- POST - http://localhost:8000/wagon
+	{
+		"id_troncal_estacion": "17",
+		"numero_vagon": "2",
+		"activo_vagon": "a"
+	}
+	O TAMBIEN PODRIA SER
+	{
+		"id_plataforma": "3",
+		"numero_vagon": "1",
+		"activo_vagon": "a"
+	}
+ - GET - http://localhost:8000/wagon - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/wagon/2 - El 2 hace referencia al id del VAGON que se desea buscar
+ - PUT - http://localhost:8000/wagon/2 - El 2 hace referencia al id del VAGON que se desea editar
+	{
+		"id_troncal_estacion": "1",
+		"numero_vagon": "1",
+		"activo_vagon": "a"
+	}
+	O TAMBIEN PODRIA SER
+	{
+		"id_plataforma": "2",
+		"numero_vagon": "6",
+		"activo_vagon": "n"
+	}
+ROUTES
+- POST - http://localhost:8000/route
+	{
+		"codigo_ruta": "BF36",
+		"activo_ruta": "a"
+	}
+ - GET - http://localhost:8000/route - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/route/2 - El 2 hace referencia al id de la RUTA que se desea buscar
+ - PUT - http://localhost:8000/route/2 - El 2 hace referencia al id de la RUTA que se desea editar
+	{
+		"codigo_ruta": "AC86",
+		"activo_ruta": "n"
+	}
+STOPS
+- POST - http://localhost:8000/route/1/wagon -> acaa se le esta diciendo que la RUTA 1 tendra los vagones asociados del JSON
+	{
+	"wagons": [
+		{
+		"id_vagon": 22,
+		"estado_parada": "a"
+		},
+		{
+		"id_vagon": 16,
+		"estado_parada": "a"
+		}
+	]
+}	
+ - GET - http://localhost:8000/route/2/wagon - HEADER-> active:a || active: n - si va sin active los lista todos,  se le dice que traiga todos los vagones de la ruta 2
+ - PUT - http://localhost:8000/route/1/wagon - El 1 hace referencia al id de la RUTA que se desea editar
+	{
+	"wagons": [
+		{
+		"id_vagon": 9,
+		"estado_parada": "a"
+		},
+		{
+		"id_vagon": 10,
+		"estado_parada": "a"
+		}
+	]
+}	
+TYPE_BUS
+- POST - http://localhost:8000/busType
+	{
+		"nombre_tipo" 	: "articulado",
+		"color"			: "#fffffe",
+		"activo_tipo_bus" : "a"
+	}
+ - GET - http://localhost:8000/busType - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/busType/2 - El 2 hace referencia al id del TIPO BUS que se desea buscar
+ - PUT - http://localhost:8000/busType/2 - El 2 hace referencia al id del TIPO BUS que se desea editar
+	{
+		"nombre_tipo" 	: "bi-articulado",
+		"color"			: "#fffffe",
+		"activo_tipo_bus" : "a"
+	}
+BUS
+- POST - http://localhost:8000/bus
+	{
+		"id_tipo_bus": "11",
+		"placabus": "YGJ-495",
+		"activo_bus": "a"
+	}
+ - GET - http://localhost:8000/bus - HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/bus/2 - El 2 hace referencia al id del  BUS que se desea buscar
+ - PUT - http://localhost:8000/bus/2 - El 2 hace referencia al id del  BUS que se desea editar
+	{
+		"id_tipo_bus": "11",
+		"placabus": "RJJ-495",
+		"activo_bus": "a"
+	}
+HORARIO
+- POST - http://localhost:8000/schedule
+	{
+		"horario_inicio": "2020-05-09 5:00:53",
+		"dia": "viernes",
+		"activo_horario": "a"
+	}
+ - GET - http://localhost:8000/schedule HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/schedule/2 - El 2 hace referencia al id del HORARIO que se desea buscar
+ - PUT - http://localhost:8000/schedule/2 - El 2 hace referencia al id del HORARIO que se desea editar
+	{
+		"horario_inicio": "2020-05-09 5:00:53",
+		"horario_fin": "2020-05-09 08:10:44",
+		"dia": "viernes",
+		"activo_horario": "a"
+	}
+ASIGNACION TRONCAL - RUTA - BUS
+- POST - http://localhost:8000/assignment
+	{
+		"id_ruta":48,
+		"id_bus":12,			
+		"id_horario":7,
+		"fecha_inicio_operacion":"2018/03/03",
+		"fecha_fin_operacion":"2014/03/22",
+		"activo_asignacion":"a"
+	}
+ - GET - http://localhost:8000/assignment HEADER-> active:a || active: n - si va sin active los lista todos
+ - GET - http://localhost:8000/assignment/2 - El 2 hace referencia al id de la ASIGNACION que se desea buscar
+ - PUT - http://localhost:8000/assignment/2 - El 2 hace referencia al id de la ASIGNACION que se desea editar
+	{
+		"id_ruta":4,
+		"id_bus":2,			
+		"id_horario":7,
+		"fecha_inicio_operacion":"2018/03/03",
+		"fecha_fin_operacion":"2014/03/22",
+		"activo_asignacion":"a"
+	}
+TRAVELS
+- POST - http://localhost:8000/travel
+	{
+		"id_asignacion_ruta": "27",
+		"fecha_inicio_viaje": "2004-12-13 06:04:59",
+		"fecha_fin_viaje": "2004-12-04 06:04:59"
+	}
+ - GET - http://localhost:8000/travel
+ - GET - http://localhost:8000/travel/2 - El 2 hace referencia al id del VIAJE que se desea buscar
+ - PUT - http://localhost:8000/travel/2 - El 2 hace referencia al id del VIAJE que se desea editar
+	{
+		"id_asignacion_ruta": "27",
+		"fecha_inicio_viaje": "2004-12-13 06:04:59",
+		"fecha_fin_viaje": "2004-12-04 06:04:59"
+	}
+
+	
