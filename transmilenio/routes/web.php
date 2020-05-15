@@ -30,4 +30,5 @@ Route::resource('busType', 'BusTypeController');
 Route::resource('schedule', 'ScheduleController');
 Route::resource('bus', 'BusController');
 Route::resource('assignment', 'TimeRouteAssignmentController');
+Route::resource('travel', 'TravelController');
 

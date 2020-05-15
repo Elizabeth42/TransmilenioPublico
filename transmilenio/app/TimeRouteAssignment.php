@@ -23,6 +23,9 @@ class TimeRouteAssignment extends Model
         return $this->belongsTo('App\Routes', $ownerKey='id_ruta');
     }
 
+    public function  travels(){
+        return $this->hasMany('App\Travel', 'id_asignacion_ruta', 'id_asignacion_ruta');
+    }
     // permitira activar o desactivar todos TimeRouteAssignment
     public function enable($enable){
         $this->activo_asignacion = $enable;

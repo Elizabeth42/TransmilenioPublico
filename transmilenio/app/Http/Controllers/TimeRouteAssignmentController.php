@@ -105,12 +105,11 @@ class TimeRouteAssignmentController extends Controller
         if ($validator->fails()) {
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
-        $updated = $asignacion->update($validator->validated());
+        //$updated = $asignacion->update($validator->validated());
         $asignacion->fill($validator->validated());
         //es necesario saber si se esta modificando
         //esto es para establecer si los hijos se activan o inactivan
-        Log::info('_______________________________________________________________________________________________________________________________________');
-        Log::info('');
+
         if ($asignacion->isDirty('id_ruta')||$asignacion->isDirty('id_bus')||$asignacion->isDirty('id_horario')||$asignacion->isDirty('fecha_inicio_operacion')){
             //es necesario garantizar que esas tres no se encuentren ya asociadas en la tabla asignacion_ruta_horario
             $exist = TimeRouteAssignment::where('id_ruta', '=', $request->input('id_ruta'))

@@ -34,7 +34,9 @@ class VerifyCsrfToken extends Middleware
         "bus/*",
         "route_wagon/*",
         "assignment",
-        "assignment/*"
+        "assignment/*",
+        "travel",
+        "travel/*"
         //
     ];
 }

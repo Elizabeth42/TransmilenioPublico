@@ -11,7 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
        //$this->call(TrunkSeed::class);
        //$this->call(StationSeed::class);
        //$this->call(TrunkStationSeed::class);
@@ -22,6 +21,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(BusTypeSeed::class);
         //$this->call(BusSeed::class);
         //$this->call(ScheduleSeed::class);
-        $this->call(TimeRouteAssignmentSeeder::class);
+        //$this->call(TimeRouteAssignmentSeeder::class);
+        $this->call(TravelSeeder::class);
     }
 }
