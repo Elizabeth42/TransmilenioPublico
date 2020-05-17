@@ -1,0 +1,11 @@
+/transmilenio/node_modules/
+/transmilenio/public/hot/
+/transmilenio/public/storage/
+/transmilenio/storage/*.key
+/transmilenio/vendor/
+/transmilenio/.env.backup
+/transmilenio/.phpunit.result.cache
+/transmilenio/Homestead.json
+/transmilenio/Homestead.yaml
+/transmilenio/npm-debug.log
+/transmilenio/yarn-error.log

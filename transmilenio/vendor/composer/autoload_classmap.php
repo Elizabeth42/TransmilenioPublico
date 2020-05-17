@@ -21,6 +21,7 @@ return array(
     'App\\Http\\Controllers\\StationTrunkController' => $baseDir . '/app/Http/Controllers/StationTrunkController.php',
     'App\\Http\\Controllers\\StopController' => $baseDir . '/app/Http/Controllers/StopController.php',
     'App\\Http\\Controllers\\TimeRouteAssignmentController' => $baseDir . '/app/Http/Controllers/TimeRouteAssignmentController.php',
+    'App\\Http\\Controllers\\TravelController' => $baseDir . '/app/Http/Controllers/TravelController.php',
     'App\\Http\\Controllers\\TrunkController' => $baseDir . '/app/Http/Controllers/TrunkController.php',
     'App\\Http\\Controllers\\TrunkStationController' => $baseDir . '/app/Http/Controllers/TrunkStationController.php',
     'App\\Http\\Controllers\\WagonController' => $baseDir . '/app/Http/Controllers/WagonController.php',
