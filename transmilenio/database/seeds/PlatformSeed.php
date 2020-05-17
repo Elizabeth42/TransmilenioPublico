@@ -18,12 +18,7 @@ class PlatformSeed extends Seeder
             $random = $portals->random();
             $r = rand(0, 1);
             // permitira establecer si sera una plataforma esta activa o uno inactiva
-            if($r==0){
-                $platform->activo_plataforma = 'n';
-            }else{
-                $platform->activo_plataforma = 'a';
-            }
-
+            $platform->activo_plataforma = $r==0?'n':'a';
             // permitira validar si el portal  se encuentre activa
             if ($random->activo_portal != 'n') {
                 $platform->id_portal = $random->id_portal;
