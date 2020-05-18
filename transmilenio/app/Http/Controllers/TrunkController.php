@@ -48,7 +48,7 @@ class TrunkController extends Controller
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
         $created = Trunk::create($validator->validated());
-        return response('{ "id": ' . $created->id_troncal . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -112,33 +112,29 @@ class TrunkController extends Controller
         $trunk = Trunk::find($id);
         if (!isset($trunk))
             return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
-
-        if ($trunk->portals()->count() > 0)
-            return response('{ "error": "La troncal tiene portales asociados y no puede ser eliminada"}', 300)->header('Content-Type', 'application/json');
-        try {
-            $deleted = $trunk->delete();
-        } catch (Exception $e) {
-            $deleted = false;
+        $state = $trunk->activo_troncal == 'a' ? 'n' : 'a';
+        if ($trunk){
+            $trunk->enable($state);
+            $trunk->save();
+            return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
         }
-        if ($deleted)
-            return response('{ "success": "La troncal fue eliminada"}', 200)->header('Content-Type', 'application/json');
-        else
-            return response('{ "error": "La troncal no pudo ser eliminada"}', 300)->header('Content-Type', 'application/json');
     }
+
 
     private function custom_validator($data)
     {
         return Validator::make($data,
             [
                 'nombre_troncal' => 'required|max:50',
-                'letra_troncal'=> 'required|max:2|unique:App\Trunk',
+                'letra_troncal'=> 'required|max:2',
                 'color_troncal' => 'required|max:7',
                 'activo_troncal' => 'required|in:a,n'
             ],
             ['max' => ' El :attribute no debe exceder los :max caracteres.',
              'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo',
-             'required'=> 'El :attribute debe ser obligatorio',
-             'unique'=> 'El :attribute debe ser unico'
+             'required'=> 'El :attribute debe ser obligatorio'
             ]
         );
     }

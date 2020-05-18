@@ -21,9 +21,11 @@ class Portal extends Model
     public function enable($enable){
         $this->activo_portal = $enable;
         $this->save();
-        $platforms = $this->platforms()->get();
-        foreach ($platforms as $platform) {
-            $platform->enable($enable);
+        if ($enable == 'n'){
+            $platforms = $this->platforms()->get();
+            foreach ($platforms as $platform) {
+                $platform->enable($enable);
+            }
         }
     }
 }

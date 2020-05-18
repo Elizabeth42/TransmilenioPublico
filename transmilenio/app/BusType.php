@@ -19,9 +19,11 @@ class BusType extends Model
     public function enable($enable){
         $this->activo_tipo_bus = $enable;
         $this->save();
-        $buses = $this->bus()->get();
-        foreach ($buses as $bus) {
-            $bus->enable($enable);
+        if ($enable == 'n'){
+            $buses = $this->bus()->get();
+            foreach ($buses as $bus) {
+                $bus->enable($enable);
+            }
         }
     }
 }

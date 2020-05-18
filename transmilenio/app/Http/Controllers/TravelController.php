@@ -54,7 +54,7 @@ class TravelController extends Controller
             return response('{"error": "la fecha de inicio del viaje no puede ser mayor que la fecha de inicio de operacion establecida en la asignacion"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear el viaje con la informacion del json
         $created = Travel::create($validator->validated());
-        return response('{ "id": ' . $created->id_viaje . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -122,12 +122,23 @@ class TravelController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Travel  $travel
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Travel $travel)
+    public function destroy($id)
     {
-        //
+        $travel = Travel::find($id);
+        if (!isset($travel))
+            return response('{"error": "El viaje no existe"}', 300)->header('Content-Type', 'application/json');
+        try {
+            $deleted = $travel->delete();
+        } catch (Exception $e) {
+            $deleted = false;
+        }
+        if ($deleted)
+            return response('{ "success": "El viaje fue eliminado"}', 200)->header('Content-Type', 'application/json');
+        else
+            return response('{ "error": "El viaje no pudo ser eliminada"}', 300)->header('Content-Type', 'application/json');
     }
 
     private function custom_validator($data)

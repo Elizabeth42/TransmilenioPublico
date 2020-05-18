@@ -51,7 +51,7 @@ class PlatformController extends Controller
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
         $created = Platform::create($validator->validated());
-        return response('{ "id": ' . $created->id_plataforma . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
 
@@ -110,12 +110,25 @@ class PlatformController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Platform  $platform
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Platform $platform)
+    public function destroy($id)
     {
-        //
+        $platform = Platform::find($id);
+        if (!isset($platform))
+            return response('{"error": "La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+        $portal = Portal::find($platform->id_portal);
+        if ($portal->activo_portal == 'n')
+            return response('{"error": "El portal se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
+        $state = $platform->activo_plataforma == 'a' ? 'n' : 'a';
+        if ($platform){
+            $platform->enable($state);
+            $platform->save();
+            return response($platform->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
     private function custom_validator($data)

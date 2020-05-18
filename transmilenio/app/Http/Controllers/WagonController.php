@@ -74,7 +74,7 @@ class WagonController extends Controller
         }
         //se encargara de crear el vagon con la informacion del json
         $created = Wagon::create($validator->validated());
-        return response('{ "id": ' . $created->id_vagon . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -172,12 +172,31 @@ class WagonController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Wagon  $wagon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Wagon $wagon)
+    public function destroy($id)
     {
-        //
+        $vagon = Wagon::find($id);
+        if (!isset($vagon))
+            return response('{"error": "El vagon no existe"}', 300)->header('Content-Type', 'application/json');
+        $troncalEstacion = TrunkStation::find($vagon->id_troncal_estacion);
+        $plataforma = Platform::find($vagon->id_plataforma);
+        if($troncalEstacion != null){
+            if ($troncalEstacion->activo_troncal_estacion == 'n')
+                return response('{"error": "La troncal_estacion se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+        }else{
+            if ($plataforma->activo_plataforma == 'n')
+                return response('{"error": "La plataforma se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+        }
+        $state = $vagon->activo_vagon == 'a' ? 'n' : 'a';
+        if ($vagon){
+            $vagon->enable($state);
+            $vagon->save();
+            return response($vagon->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
     private function custom_validator($data)

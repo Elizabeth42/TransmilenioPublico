@@ -24,9 +24,11 @@ class Station extends Model
     public function enable($enable){
         $this->activo_estacion = $enable;
         $this->save();
-        $trunks_stations = $this->trunk_stations()->get();
-        foreach ($trunks_stations as $trunk_station) {
-            $trunk_station->enable($enable);
+        if ($enable == 'n'){
+            $trunks_stations = $this->trunk_stations()->get();
+            foreach ($trunks_stations as $trunk_station) {
+                $trunk_station->enable($enable);
+            }
         }
     }
 }

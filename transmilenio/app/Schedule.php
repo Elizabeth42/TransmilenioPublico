@@ -18,9 +18,11 @@ class Schedule extends Model
     public function enable($enable){
         $this->activo_horario = $enable;
         $this->save();
-        $assignaments = $this->timeRouteAssignment()->get();
-        foreach ($assignaments as $assignament) {
-            $assignament->enable($enable);
+        if ($enable == 'n'){
+            $assignaments = $this->timeRouteAssignment()->get();
+            foreach ($assignaments as $assignament) {
+                $assignament->enable($enable);
+            }
         }
     }
 }

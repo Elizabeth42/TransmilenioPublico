@@ -58,7 +58,7 @@ class TrunkStationController extends Controller
 
             // se procede con la creacion de la troncal estacion
             $created = TrunkStation::create($validator->validated());
-            return response('{ "id": ' . $created->id_troncal_estacion . '}', 200)->header('Content-Type', 'application/json');
+            return response($created->toJson(), 200)->header('Content-Type', 'application/json');
      //   }
     }
 
@@ -124,12 +124,27 @@ class TrunkStationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\TrunkStation  $trunkStation
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TrunkStation $trunkStation)
+    public function destroy($id)
     {
-        //
+        $troncalStacion = TrunkStation::find($id);
+        if (!isset($troncalStacion))
+            return response('{"error": "La troncal_estacion no existe"}', 300)->header('Content-Type', 'application/json');
+        $troncal = Trunk::find($troncalStacion->id_troncal);
+        $estacion = Trunk::find($troncalStacion->id_estacion);
+        if($troncal->activo_troncal == 'n' || $estacion->activo_estacion == 'n'){
+            return response('{"error": "La troncal o la estacion no se encuentra activa"}', 300)->header('Content-Type', 'application/json');
+        }
+        $state = $troncalStacion->activo_troncal_estacion == 'a' ? 'n' : 'a';
+        if ($troncalStacion){
+            $troncalStacion->enable($state);
+            $troncalStacion->save();
+            return response($troncalStacion->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
 

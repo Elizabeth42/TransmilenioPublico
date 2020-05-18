@@ -35,13 +35,15 @@ class Trunk extends Model
     public function enable($enable){
         $this->activo_troncal = $enable;
         $this->save();
-        $trunks_stations = $this->trunk_stations()->get();
-        foreach ($trunks_stations as $trunk_station) {
-            $trunk_station->enable($enable);
-        }
-        $portals = $this->portals()->get();
-        foreach ($portals as $portal) {
-            $portal->enable($enable);
+        if ($enable == 'n'){
+            $trunks_stations = $this->trunk_stations()->get();
+            foreach ($trunks_stations as $trunk_station) {
+                $trunk_station->enable($enable);
+            }
+            $portals = $this->portals()->get();
+            foreach ($portals as $portal) {
+                $portal->enable($enable);
+            }
         }
     }
 }

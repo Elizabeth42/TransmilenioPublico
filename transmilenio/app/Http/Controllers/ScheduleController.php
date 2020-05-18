@@ -45,7 +45,7 @@ class ScheduleController extends Controller
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
         $created = Schedule::create($validator->validated());
-        return response('{ "id": ' . $created->id_horario . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -100,14 +100,24 @@ class ScheduleController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Schedule  $schedule
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Schedule $schedule)
+    public function destroy($id)
     {
-        //
+        $horario = Schedule::find($id);
+        if (!isset($horario))
+            return response('{"error": "El horario no existe"}', 300)->header('Content-Type', 'application/json');
+        $state = $horario->activo_horario == 'a' ? 'n' : 'a';
+        if ($horario){
+            $horario->enable($state);
+            $horario->save();
+            return response($horario->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
+
     private function custom_validator($data)
     {
         return Validator::make($data,

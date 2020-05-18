@@ -52,7 +52,7 @@ class PortalController extends Controller
         }
     //se encargara de crear el portal con la informacion del json
         $created = Portal::create($validator->validated());
-        return response('{ "id": ' . $created->id_portal . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -115,20 +115,20 @@ class PortalController extends Controller
      */
     public function destroy($id)
     {
-//        $portal = Portal::find($id);
-//        if (!isset($portal))
-//            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
-//        if ($portal->platforms()->count() > 0)
-//            return response('{ "error": "Hay una plataforma que tiene este portal asignado"}', 300)->header('Content-Type', 'application/json');
-//        try {
-//            $deleted = $portal->delete();
-//        } catch (Exception $e) {
-//            $deleted = false;
-//        }
-//        if ($deleted)
-//            return response('{ "success": "El portal fue eliminado"}', 200)->header('Content-Type', 'application/json');
-//        else
-//            return response('{ "error": "El portal no pudo ser eliminado"}', 300)->header('Content-Type', 'application/json');
+        $portal = Portal::find($id);
+        if (!isset($portal))
+            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
+        $troncal = Trunk::find($portal->id_troncal);
+        if ($troncal->activo_troncal == 'n')
+            return response('{"error": "La troncal se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+        $state = $portal->activo_portal == 'a' ? 'n' : 'a';
+        if ($portal){
+            $portal->enable($state);
+            $portal->save();
+            return response($portal->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
     private function custom_validator($data)

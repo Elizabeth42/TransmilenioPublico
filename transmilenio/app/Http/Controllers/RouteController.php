@@ -45,7 +45,7 @@ class RouteController extends Controller
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
         $created = Route::create($validator->validated());
-        return response('{ "id": ' . $created->id_ruta . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -101,12 +101,22 @@ class RouteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Route  $route
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Route $route)
+    public function destroy($id)
     {
-        //
+        $ruta = Route::find($id);
+        if (!isset($ruta))
+            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+        $state = $ruta->activo_ruta == 'a' ? 'n' : 'a';
+        if ($ruta){
+            $ruta->enable($state);
+            $ruta->save();
+            return response($ruta->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
     private function custom_validator($data)

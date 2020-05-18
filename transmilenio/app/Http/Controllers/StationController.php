@@ -48,7 +48,7 @@ class StationController extends Controller
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
         $created = Station::create($validator->validated());
-        return response('{ "id": ' . $created->id_estacion . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -113,29 +113,25 @@ class StationController extends Controller
         $station = Station::find($id);
         if (!isset($station))
             return response('{"error": "La estacion no existe"}', 300)->header('Content-Type', 'application/json');
-        if ($station->trunks()->count() > 0)
-            return response('{ "error": "La estacion tiene troncales asociadas y no puede ser eliminada"}', 300)->header('Content-Type', 'application/json');
-        try {
-            $deleted = $station->delete();
-        } catch (Exception $e) {
-            $deleted = false;
+        $state = $station->activo_estacion == 'a' ? 'n' : 'a';
+        if ($station){
+            $station->enable($state);
+            $station->save();
+            return response($station->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
         }
-        if ($deleted)
-            return response('{ "success": "La estacion fue eliminada"}', 200)->header('Content-Type', 'application/json');
-        else
-            return response('{ "error": "La estacion no pudo ser eliminada"}', 300)->header('Content-Type', 'application/json');
     }
 
     private function custom_validator($data)
     {
         return Validator::make($data,
-            ['nombre_estacion' => 'required|max:50|unique:App\Station',
+            ['nombre_estacion' => 'required|max:50',
                 'activo_estacion' => 'required|in:a,n'
             ],
             ['max' => ' El :attribute no debe exceder los :max caracteres.',
                 'required'=> 'El :attribute debe ser obligatorio',
-                'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo',
-                'unique'=> 'El :attribute debe ser unico']
+                'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo']
         );
     }
 }

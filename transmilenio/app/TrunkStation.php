@@ -30,9 +30,11 @@ class TrunkStation extends Model
     public function enable($enable){
         $this->activo_troncal_estacion = $enable;
         $this->save();
-        $wagons = $this->wagons()->get();
-        foreach ($wagons as $wagon) {
-            $wagon->enable($enable);
+        if ($enable == 'n'){
+            $wagons = $this->wagons()->get();
+            foreach ($wagons as $wagon) {
+                $wagon->enable($enable);
+            }
         }
     }
 }

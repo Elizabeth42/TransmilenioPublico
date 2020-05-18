@@ -87,7 +87,32 @@ class StopController extends Controller
             $new_wagons[$wagon['id_vagon']]['estado_parada'] = $wagon['estado_parada'];
             $new_wagons[$wagon['id_vagon']]['orden'] = $key+1;
         }
-        $route->wagons()->sync($new_wagons);
+        $route->wagons()->syncWithoutDetaching($new_wagons);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param int $idR
+     * @param int $idW
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function delete_wagon_to_route($idR,$idW){
+        $route = Route::find($idR);
+        if (!isset($route))
+            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+        if($route->activo_ruta =='n')
+            return response('{"error": "La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+        if($route->hasWagon($idW)){
+            $wagon_r = $route->wagons()->withPivot('estado_parada')->where('vagones.id_vagon','=',$idW)->first();
+            if ($wagon_r->activo_vagon == 'n')
+                return response('{"error": "El vagon se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
+            $new_state = $wagon_r->pivot->estado_parada == 'a' ? 'n' : 'a';
+            $route->wagons()->syncWithoutDetaching([$wagon_r->id_vagon=>['estado_parada'=>$new_state]]);
+            return response($route->wagons()->withPivot('estado_parada')->where('vagones.id_vagon','=',$idW)->first()->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "El vagon no se encuentra asociado a esta ruta"}', 300)->header('Content-Type', 'application/json');
+        }
     }
 
     private function custom_validator($data)

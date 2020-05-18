@@ -25,9 +25,11 @@ class Platform extends Model
     public function enable($enable){
         $this->activo_plataforma = $enable;
         $this->save();
-        $wagons = $this->wagons()->get();
-        foreach ($wagons as $wagon) {
-            $wagon->enable($enable);
+        if ($enable == 'n'){
+            $wagons = $this->wagons()->get();
+            foreach ($wagons as $wagon) {
+                $wagon->enable($enable);
+            }
         }
     }
 }

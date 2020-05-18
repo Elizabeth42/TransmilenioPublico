@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Bus;
+use App\BusType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -53,7 +54,7 @@ class BusController extends Controller
         }
         //se encargara de crear el portal con la informacion del json
         $created = Bus::create($validator->validated());
-        return response('{ "id": ' . $created->id_bus . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -119,12 +120,25 @@ class BusController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Bus  $bus
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Bus $bus)
+    public function destroy($id)
     {
-        //
+        $bus = Bus::find($id);
+        if (!isset($bus))
+            return response('{"error": "El bus no existe"}', 300)->header('Content-Type', 'application/json');
+        $type = BusType::find($bus->id_tipo_bus);
+        if ($type->activo_tipo_bus == 'n')
+            return response('{"error": "El tipo bus se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
+        $state = $bus->activo_bus == 'a' ? 'n' : 'a';
+        if ($bus){
+            $bus->enable($state);
+            $bus->save();
+            return response($bus->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
     private function custom_validator($data)

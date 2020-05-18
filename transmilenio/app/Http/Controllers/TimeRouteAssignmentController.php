@@ -59,7 +59,7 @@ class TimeRouteAssignmentController extends Controller
             return response('{"error": "la ruta, el horario, el bus y la fecha de inicio ya fueron asignadas"}', 300)->header('Content-Type', 'application/json');
         // se procede con la creacion de la asignacion
         $created = TimeRouteAssignment::create($validator->validated());
-        return response('{ "id": ' . $created->id_asignacion_ruta . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -135,12 +135,28 @@ class TimeRouteAssignmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\TimeRouteAssignment  $timeRouteAssignment
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TimeRouteAssignment $timeRouteAssignment)
+    public function destroy($id)
     {
-        //
+        $asignacion = TimeRouteAssignment::find($id);
+        if (!isset($asignacion))
+            return response('{"error": "La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
+        $ruta = Route::find($asignacion->id_ruta);
+        $horario = Schedule::find($asignacion->id_horario);
+        $bus = Bus::find($asignacion->id_bus);
+        if($ruta->activo_ruta == 'n' || $horario->activo_horario == 'n'|| $bus->activo_bus == 'n'){
+            return response('{"error": "La ruta o el bus o el horario no se encuentra activos"}', 300)->header('Content-Type', 'application/json');
+        }
+        $state = $asignacion->activo_asignacion == 'a' ? 'n' : 'a';
+        if ($asignacion){
+            $asignacion->enable($state);
+            $asignacion->save();
+            return response($asignacion->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
     private function custom_validator($data)

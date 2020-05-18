@@ -46,7 +46,7 @@ class BusTypeController extends Controller
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         }
         $created = BusType::create($validator->validated());
-        return response('{ "id": ' . $created->id_tipo_bus . '}', 200)->header('Content-Type', 'application/json');
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -102,12 +102,22 @@ class BusTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BusType  $busType
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BusType $busType)
+    public function destroy($id)
     {
-        //
+        $tipoBus = BusType::find($id);
+        if (!isset($tipoBus))
+            return response('{"error": "El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
+        $state = $tipoBus->activo_tipo_bus == 'a' ? 'n' : 'a';
+        if ($tipoBus){
+            $tipoBus->enable($state);
+            $tipoBus->save();
+            return response($tipoBus->toJson(), 200)->header('Content-Type', 'application/json');
+        }else{
+            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+        }
     }
 
     private function custom_validator($data)

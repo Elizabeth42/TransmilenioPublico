@@ -16,7 +16,6 @@ class Route extends Model
     {
         return $this->wagons()->whereRaw('"PARADAS"."ID_VAGON"='.$vagon)->count() > 0;
     }
-
     public function wagons(){
         return $this->belongsToMany('App\Wagon', 'paradas', 'id_ruta', 'id_vagon');
     }
@@ -30,13 +29,15 @@ class Route extends Model
     public function enable($enable){
         $this->activo_ruta = $enable;
         $this->save();
-        $wagons = $this->wagons()->get();
-        foreach($wagons as $wagon){
-            $this->wagons()->updateExistingPivot($wagon->id_vagon, ['estado_parada'=>$enable]);
-        }
-        $assignaments = $this->timeRouteAssignment()->get();
-        foreach ($assignaments as $assignament) {
-            $assignament->enable($enable);
+        if ($enable == 'n'){
+            $wagons = $this->wagons()->get();
+            foreach($wagons as $wagon){
+                $this->wagons()->updateExistingPivot($wagon->id_vagon, ['estado_parada'=>$enable]);
+            }
+            $assignaments = $this->timeRouteAssignment()->get();
+            foreach ($assignaments as $assignament) {
+                $assignament->enable($enable);
+            }
         }
     }
 }
