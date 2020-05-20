@@ -133,4 +133,21 @@ class RouteController extends Controller
             ]
         );
     }
+
+    public function getRandom($amount) {
+        $result = collect();
+        for ($i = 0; $i < $amount ; $i++) {
+            $model = factory(Route::class)->make();
+            $result->add($model);
+        }
+        return $result;
+    }
+
+    public function saveRandom($amount) {
+        $result = $this->getRandom($amount);
+        foreach ($result as $model) {
+            $model->save();
+        }
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+    }
 }

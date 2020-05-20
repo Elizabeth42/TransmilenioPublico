@@ -133,14 +133,14 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Documentos\Frameworks\proyecto\transmilenio\storage\logs" />
     </key>
   </component>
-  <component name="RunManager" selected="PHPUnit.Transmi">
+  <component name="RunManager" selected="Laravel.Laravel">
     <configuration name="Laravel" type="LaravelStorm_run_conf_serve" factoryName="Laravel">
       <option name="host" value="localhost" />
       <option name="port" value="8000" />
@@ -166,15 +166,6 @@
       <TestRunner class="Tests\Feature\ExampleTest" configuration_file="$PROJECT_DIR$/phpunit.xml" file="$PROJECT_DIR$/tests/Feature/ExampleTest.php" method="testBasicTest" scope="Method" />
       <method v="2" />
     </configuration>
-    <configuration name="Transmi" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
-      <CommandLine>
-        <PhpTestInterpreterSettings>
-          <option name="interpreterName" value="PHP 7.4" />
-        </PhpTestInterpreterSettings>
-      </CommandLine>
-      <TestRunner configuration_file="$PROJECT_DIR$/phpunit.xml" directory="$PROJECT_DIR$" />
-      <method v="2" />
-    </configuration>
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <CommandLine>
         <PhpTestInterpreterSettings>
@@ -188,11 +179,9 @@
       <item itemvalue="Laravel.Laravel" />
       <item itemvalue="PHPUnit.phpunit.xml" />
       <item itemvalue="PHPUnit.ExampleTest.testBasicTest" />
-      <item itemvalue="PHPUnit.Transmi" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="PHPUnit.Transmi" />
         <item itemvalue="PHPUnit.ExampleTest.testBasicTest" />
       </list>
     </recent_temporary>
@@ -237,7 +226,11 @@
       <workItem from="1589669482774" duration="635000" />
       <workItem from="1589674370231" duration="3484000" />
       <workItem from="1589747048873" duration="4233000" />
-      <workItem from="1589758150103" duration="21491000" />
+      <workItem from="1589758150103" duration="22079000" />
+      <workItem from="1589815896963" duration="925000" />
+      <workItem from="1589835160041" duration="615000" />
+      <workItem from="1589916203699" duration="5115000" />
+      <workItem from="1589921882241" duration="25022000" />
     </task>
     <servers />
   </component>
@@ -250,10 +243,10 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
-    <state x="238" y="98" key="#CLI_Interpreters" timestamp="1589760490998">
+    <state x="238" y="98" key="#CLI_Interpreters" timestamp="1589784005097">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="238" y="98" key="#CLI_Interpreters/0.0.1536.824@0.0.1536.824" timestamp="1589760490998" />
+    <state x="238" y="98" key="#CLI_Interpreters/0.0.1536.824@0.0.1536.824" timestamp="1589784005097" />
     <state x="452" y="0" width="645" height="824" key="#ExampleTest.testBasicTest" timestamp="1589676363867">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -266,22 +259,22 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="361" y="71" key="#Log_Highlighting_(ideolog)/0.0.1536.824@0.0.1536.824" timestamp="1587950621685" />
-    <state x="452" y="26" width="775" height="724" key="#Transmi" timestamp="1589760501129">
+    <state x="452" y="26" width="775" height="724" key="#Transmi" timestamp="1589784007334">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="452" y="26" width="775" height="724" key="#Transmi/0.0.1536.824@0.0.1536.824" timestamp="1589760501129" />
-    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589760269247">
+    <state x="452" y="26" width="775" height="724" key="#Transmi/0.0.1536.824@0.0.1536.824" timestamp="1589784007334" />
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589917909387">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1589760269247" />
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1589917909387" />
     <state x="523" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1587948421764">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="523" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.824@0.0.1536.824" timestamp="1587948421764" />
-    <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1589782012818">
+    <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1589950847456">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1536.824@0.0.1536.824" timestamp="1589782012818" />
+    <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1536.824@0.0.1536.824" timestamp="1589950847456" />
     <state x="545" y="294" width="445" height="329" key="ComposerInitDialogKey" timestamp="1589518097020">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -290,50 +283,50 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" key="DiffContextDialog/0.0.1536.824@0.0.1536.824" timestamp="1589675354133" />
-    <state x="548" y="167" key="FileChooserDialogImpl" timestamp="1589760476372">
+    <state x="548" y="167" key="FileChooserDialogImpl" timestamp="1589833259376">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1589760476372" />
-    <state width="1493" height="286" key="GridCell.Tab.0.bottom" timestamp="1589686788721">
+    <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1589833259376" />
+    <state width="1493" height="147" key="GridCell.Tab.0.bottom" timestamp="1589953853927">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="286" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1589686788721" />
-    <state width="1493" height="286" key="GridCell.Tab.0.center" timestamp="1589686788721">
+    <state width="1493" height="147" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1589953853927" />
+    <state width="1493" height="147" key="GridCell.Tab.0.center" timestamp="1589953853927">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="286" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1589686788721" />
-    <state width="1493" height="286" key="GridCell.Tab.0.left" timestamp="1589686788721">
+    <state width="1493" height="147" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1589953853927" />
+    <state width="1493" height="147" key="GridCell.Tab.0.left" timestamp="1589953853927">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="286" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1589686788721" />
-    <state width="1493" height="286" key="GridCell.Tab.0.right" timestamp="1589686788721">
+    <state width="1493" height="147" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1589953853927" />
+    <state width="1493" height="147" key="GridCell.Tab.0.right" timestamp="1589953853927">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="286" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1589686788721" />
-    <state x="277" y="55" key="SettingsEditor" timestamp="1589747101103">
+    <state width="1493" height="147" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1589953853927" />
+    <state x="277" y="55" key="SettingsEditor" timestamp="1589948490550">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1589747101103" />
+    <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1589948490550" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1588884861073">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1536.824@0.0.1536.824" timestamp="1588884861073" />
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1589758150266">
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1589921889766">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1589758150266" />
+    <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1589921889766" />
     <state x="187" y="83" width="1204" height="512" key="dock-window-1" timestamp="1587684515859">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="187" y="83" width="1204" height="512" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1587684515859" />
-    <state x="444" y="10" width="648" height="804" key="find.popup" timestamp="1589773176869">
+    <state x="444" y="10" width="738" height="804" key="find.popup" timestamp="1589947450059">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="444" y="10" width="648" height="804" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1589773176869" />
-    <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1589341895510">
+    <state x="444" y="10" width="738" height="804" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1589947450059" />
+    <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1589941814030">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="425" y="187" width="672" height="677" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1589341895510" />
+    <state x="425" y="187" width="672" height="677" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1589941814030" />
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1588805124452">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

@@ -11,8 +11,8 @@ class Bus extends Model
     public $timestamps = false;
     protected $fillable = ['placabus','activo_bus','id_tipo_bus'];
 
-    public function  busTypes(){
-        return $this->belongsTo('App\BusType', $ownerKey='id_tipo_bus');
+    public function  busType(){
+        return $this->belongsTo('App\BusType', 'id_tipo_bus', 'id_tipo_bus');
     }
 
     public function timeRouteAssignment(){

@@ -13,6 +13,6 @@ $factory->define(Schedule::class, function (Faker $faker) {
         'horario_inicio' => Carbon::createFromFormat('H:i:s', $faker->time($format='H:i:s', $max = '08:00:00')),
         'horario_fin'=> Carbon::parse($faker->time($format='H:i:s', $max = '23:59:59')),
         'dia'=>$faker->dayOfWeek($max = 'Sunday'),
-        'activo_horario'=> 'a'
+        'activo_horario'=> rand(0,1) == 0 ? 'n' : 'a'
     ];
 });

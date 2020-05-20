@@ -134,4 +134,15 @@ class ScheduleController extends Controller
             ]
         );
     }
+
+    public function getRandom($amount) {
+        $result = collect();
+        for ($i = 0; $i < $amount ; $i++) {
+            $model = factory(Schedule::class)->make();
+            $validator = $this->custom_validator($model->attributesToArray());
+            if (!$validator->fails())
+                $result->add($model);
+        }
+        return $result;
+    }
 }

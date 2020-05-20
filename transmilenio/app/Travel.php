@@ -12,6 +12,6 @@ class Travel extends Model
     protected $fillable = ['id_asignacion_ruta','fecha_inicio_viaje','fecha_fin_viaje'];
 
     public function  asinnations(){
-        return $this->belongsTo('App\TimeRouteAssignment', $ownerKey='id_asignacion_ruta');
+        return $this->belongsTo('App\TimeRouteAssignment', 'id_asignacion_ruta', 'id_asignacion_ruta');
     }
 }

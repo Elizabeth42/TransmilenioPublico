@@ -16,7 +16,8 @@
         "laravel/tinker": "^2.0",
         "nesbot/carbon": "^2.33",
         "pelmered/fake-car": "^1.4",
-        "yajra/laravel-oci8": "7"
+        "yajra/laravel-oci8": "7",
+      "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

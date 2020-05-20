@@ -7,12 +7,15 @@ use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 $factory->define(TimeRouteAssignment::class, function (Faker $faker) {
+    $routes = App\Route::all();
+    $buses = App\Bus::all();
+    $schedule = App\Schedule::all();
     return [
-        'id_ruta' => App\Route::all()[0]->id_ruta,
-        'id_bus' => App\Bus::all()[0]->id_bus,
-        'id_horario' => App\Schedule::all()[0]->id_horario,
+        'id_ruta' => $routes->random()->id_ruta,
+        'id_bus' => $buses->random()->id_bus,
+        'id_horario' => $schedule->random()->id_horario,
         'fecha_inicio_operacion' => $faker->dateTimeBetween('-19 year', '-10 days'),
         //'fecha_inicio_operacion' => Carbon::createFromFormat('Y-m-d',$faker->dateTimeBetween('-19 year', '-10 days')),
-        'activo_asignacion'=> 'a'
+        'activo_asignacion'=> rand(0,1) == 0 ? 'n' : 'a'
     ];
 });

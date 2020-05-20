@@ -12,11 +12,11 @@ class TrunkStation extends Model
     protected $fillable = ['id_estacion','id_troncal','activo_troncal_estacion'];
 
     public function  trunks(){
-        return $this->belongsTo('App\Trunk', $ownerKey='id_troncal');
+        return $this->belongsTo('App\Trunk','id_troncal' ,'id_troncal');
     }
 
     public function  stations(){
-        return $this->belongsTo('App\Station', $ownerKey='id_estacion');
+        return $this->belongsTo('App\Station','id_estacion', 'id_estacion');
     }
 
     public function  wagons(){

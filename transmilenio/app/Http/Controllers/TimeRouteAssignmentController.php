@@ -195,4 +195,15 @@ class TimeRouteAssignmentController extends Controller
             ]
         );
     }
+
+    public function getRandom($amount) {
+        $result = collect();
+        for ($i = 0; $i < $amount ; $i++) {
+            $model = factory(TimeRouteAssignment::class)->make();
+            $valid = \TimeRouteAssignmentSeeder::validate($model);
+            if ($valid)
+                $result->add($model);
+        }
+        return $result;
+    }
 }

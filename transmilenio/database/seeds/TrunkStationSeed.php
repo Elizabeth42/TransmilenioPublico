@@ -12,28 +12,21 @@ class TrunkStationSeed extends Seeder
      */
     public function run()
     {
-        // esto es para generar los aleatorios entre troncal y estacion
-        $trunks = App\Trunk::all();
-        $stations = App\Station::all();
-        for ($i = 1; $i <= 10; $i++) {
-            $randomS = $stations->random();
-            $randomT = $trunks->random();
-            $trunkStation = new App\TrunkStation();
-            $r = rand(0, 1);
-            if($r==0){
-                $trunkStation->activo_troncal_estacion = 'n';
-            }else{
-                $trunkStation->activo_troncal_estacion = 'a';
-            }
-            // permitira validar si la estacion o la troncal no se encuentre activa
-            if ($randomS->activo_estacion != 'n' && $randomT->activo_troncal != 'n'){
-                // para validar que no se encuentren asociados ya
-                if (App\TrunkStation:: where('ID_ESTACION', '=', $randomS->id_estacion)->where('ID_TRONCAL', '=', $randomT->id_troncal)->count() == 0) {
-                    $trunkStation->id_estacion = $randomS->id_estacion;
-                    $trunkStation->id_troncal = $randomT->id_troncal;
-                    $trunkStation->save();
-                }
+        factory(App\TrunkStation::class, 10)->make()->each(function($trunkStation) {
+            $valid = self::validate($trunkStation);
+            if($valid)
+                $trunkStation->save();
+        });
+    }
+
+    public static function validate($trunkStation){
+        // debe validar que tanto la troncal como la estacion designadas se encuentren activas
+        if ($trunkStation->trunks()->first()->activo_troncal != 'n' && $trunkStation->stations()->first()->activo_estacion != 'n') {
+            // para validar que no se encuentren asociados ya
+            if (\App\TrunkStation:: where('ID_ESTACION', '=', $trunkStation->stations()->first()->id_estacion)->where('ID_TRONCAL', '=',$trunkStation->trunks()->first()->id_troncal)->count() == 0) {
+                return true;
             }
         }
+        return false;
     }
 }

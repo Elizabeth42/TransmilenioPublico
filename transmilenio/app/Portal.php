@@ -12,7 +12,7 @@ class Portal extends Model
     protected $fillable = ['nombre_portal','id_troncal','activo_portal'];
 
     public function  trunks(){
-        return $this->belongsTo('App\Trunk', $ownerKey='id_troncal');
+        return $this->belongsTo('App\Trunk', 'id_troncal','id_troncal');
     }
     public function  platforms(){
         return $this->hasMany('App\Platform', 'id_portal', 'id_portal');

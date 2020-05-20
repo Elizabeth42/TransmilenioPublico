@@ -4,7 +4,7 @@ namespace Faker;
 
 class Factory
 {
-    const DEFAULT_LOCALE = 'en_US';
+    const DEFAULT_LOCALE = 'es_ES';
 
     protected static $defaultProviders = array('Address', 'Barcode', 'Biased', 'Color', 'Company', 'DateTime', 'File', 'HtmlLorem', 'Image', 'Internet', 'Lorem', 'Miscellaneous', 'Payment', 'Person', 'PhoneNumber', 'Text', 'UserAgent', 'Uuid');
 

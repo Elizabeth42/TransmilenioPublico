@@ -11,20 +11,18 @@ class BusSeed extends Seeder
      */
     public function run()
     {
-        $busTypes = App\BusType::all();
-        factory(App\Bus::class, 10)->create()->each(function($bus) use ($busTypes){
-            $enable = rand(0,1);
-            $stateBus = $enable == 0 ? 'n' : 'a';
-            $bus->activo_bus = $stateBus;
-
-            $random = $busTypes->random();
-            // permitira validar si la el tipo de bus se encuentra activa
-            if ($random->activo_tipo_bus != 'n') {
-                $bus->id_tipo_bus = $random->id_tipo_bus;
+        factory(App\Bus::class, 10)->make()->each(function($bus) {
+            $valid = self::validate($bus);
+            if($valid)
                 $bus->save();
-            }else{
-                $bus->delete(); // si el tipo de bus se encuentra inactivo se borra el registro del bus creado
-            }
         });
+    }
+
+    public static function validate($bus){
+        if ($bus->busType()->first()->activo_tipo_bus != 'n' &&
+            $bus->where('placabus','=',$bus->placabus)->count()==0) {
+            return true;
+        }
+      return false;
     }
 }

@@ -159,4 +159,15 @@ class TravelController extends Controller
             ]
         );
     }
+
+    public function getRandom($amount) {
+        $result = collect();
+        for ($i = 0; $i < $amount ; $i++) {
+            $model = factory(Travel::class)->make();
+            $valid = \TravelSeeder::validate($model);
+            if ($valid)
+                $result->add($model);
+        }
+        return $result;
+    }
 }

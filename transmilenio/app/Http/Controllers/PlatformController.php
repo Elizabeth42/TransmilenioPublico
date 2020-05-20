@@ -150,4 +150,15 @@ class PlatformController extends Controller
                 'integer'=> 'El :attribute debe ser de tipo entero']
         );
     }
+
+    public function getRandom($amount) {
+        $result = collect();
+        for ($i = 0; $i < $amount ; $i++) {
+            $model = factory(Platform::class)->make();
+            $valid = \PlatformSeed::validate($model);
+            if ($valid)
+                $result->add($model);
+        }
+        return $result;
+    }
 }

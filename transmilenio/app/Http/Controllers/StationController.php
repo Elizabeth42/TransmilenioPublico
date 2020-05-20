@@ -134,4 +134,16 @@ class StationController extends Controller
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo']
         );
     }
+
+
+    public function getRandom($amount) {
+        $result = collect();
+        for ($i = 0; $i < $amount ; $i++) {
+            $model = factory(Station::class)->make();
+            $validator = $this->custom_validator($model->attributesToArray());
+            if (!$validator->fails())
+                $result->add($model);
+        }
+        return $result;
+    }
 }

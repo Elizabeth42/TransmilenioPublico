@@ -173,4 +173,15 @@ class TrunkStationController extends Controller
             ]
         );
     }
+
+    public function getRandom($amount) {
+        $result = collect();
+        for ($i = 0; $i < $amount ; $i++) {
+            $model = factory(TrunkStation::class)->make();
+            $valid = \TrunkStationSeed::validate($model);
+            if ($valid)
+                $result->add($model);
+        }
+        return $result;
+    }
 }
