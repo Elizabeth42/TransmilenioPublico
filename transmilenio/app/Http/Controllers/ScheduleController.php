@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
@@ -132,8 +133,8 @@ class ScheduleController extends Controller
     {
         return Validator::make($data,
             [
-                'horario_inicio' => 'required|date',
-                'horario_fin' => 'required|date|after:horario_inicio',
+                'horario_inicio' => 'required|date_format:Y-m-d H:i:s',
+                'horario_fin' => 'required|date_format:Y-m-d H:i:s|after:horario_inicio',
                 'dia' => 'required|max:10',
                 'activo_horario' => 'required|in:a,n'
             ],
@@ -150,8 +151,11 @@ class ScheduleController extends Controller
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(Schedule::class)->make();
             $validator = $this->custom_validator($model->attributesToArray());
-            if (!$validator->fails())
+            if (!$validator->fails()){
+//                $model->horario_inicio = $model->getDuration($model->horario_inicio);
+//                $model->horario_fin = $model->getDuration($model->horario_fin);
                 $result->add($model);
+            }
         }
         return $result;
     }

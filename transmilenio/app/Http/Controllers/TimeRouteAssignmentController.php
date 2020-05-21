@@ -171,7 +171,7 @@ class TimeRouteAssignmentController extends Controller
         return Validator::make($data,
             ['activo_asignacion' => 'required|in:a,n',
                 'fecha_inicio_operacion' =>'required|date',
-                'fecha_fin_operacion' =>'date|after:fecha_inicio_operacion',
+                'fecha_fin_operacion' =>'date|after:fecha_inicio_operacion|nullable',
                 //con esto valido que la ruta sea obligatoria, que la ruta exista y que se encuentre activa
                 'id_ruta'=>['required',
                     Rule::exists('rutas', '')->where(function ($query) {

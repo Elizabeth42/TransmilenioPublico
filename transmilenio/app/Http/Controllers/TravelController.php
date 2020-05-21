@@ -60,7 +60,7 @@ class TravelController extends Controller
             return [false , 'la asignacion y fecha de inicio ya fueron asignadas'];
         $validateDate = Carbon::parse($asignacion->fecha_inicio_operacion)->gt($model['fecha_inicio_viaje']);
         if($validateDate)
-            return [false , 'la fecha de inicio del viaje no puede ser mayor que la fecha de inicio de operacion establecida en la asignacion'];
+            return [false , 'la fecha de inicio del viaje no puede ser menor que la fecha de inicio de operacion establecida en la asignacion'];
         return [true, $validator->validated()];
     }
 
@@ -152,7 +152,7 @@ class TravelController extends Controller
     {
         return Validator::make($data,
             ['fecha_inicio_viaje' => 'required|date',
-                'fecha_fin_viaje' => 'date|after:fecha_inicio_viaje',
+                'fecha_fin_viaje' => 'date|after:fecha_inicio_viaje|nullable',
                 'id_asignacion_ruta'=>['required',
                     Rule::exists('asignacion_ruta_horario', '')->where(function ($query) {
                         $query->where('activo_asignacion', 'a');
