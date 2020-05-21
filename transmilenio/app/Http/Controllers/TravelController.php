@@ -40,21 +40,28 @@ class TravelController extends Controller
      */
     public function store(Request $request)
     {
-        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
-        $validator = $this->custom_validator($request->all());
-        if ($validator->fails()) {
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        }
-        $exist =Travel::where('id_asignacion_ruta','=',$request->input('id_asignacion_ruta'))->where('fecha_inicio_viaje','=',$request->input('fecha_inicio_viaje'))->count();
-        $asignacion = TimeRouteAssignment::find($request->input('id_asignacion_ruta'));
-        if($exist>0)
-            return response('{"error": "la asignacion y fecha de inicio ya fueron asignadas"}', 300)->header('Content-Type', 'application/json');
-        $validateDate = Carbon::parse($asignacion->fecha_inicio_operacion)->gt($request->input('fecha_inicio_viaje'));
-        if($validateDate)
-            return response('{"error": "la fecha de inicio del viaje no puede ser mayor que la fecha de inicio de operacion establecida en la asignacion"}', 300)->header('Content-Type', 'application/json');
+        $valid = $this->validateModel($request->all());
+        if(!$valid[0])
+            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear el viaje con la informacion del json
-        $created = Travel::create($validator->validated());
+        $created = Travel::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
+    }
+
+    private function validateModel($model){
+        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
+        $validator = $this->custom_validator($model);
+        if ($validator->fails()) {
+            return [false, $validator->errors()->toJson()];
+        }
+        $exist =Travel::where('id_asignacion_ruta','=',$model['id_asignacion_ruta'])->where('fecha_inicio_viaje','=',$model['fecha_inicio_viaje'])->count();
+        $asignacion = TimeRouteAssignment::find($model['id_asignacion_ruta']);
+        if($exist>0)
+            return [false , 'la asignacion y fecha de inicio ya fueron asignadas'];
+        $validateDate = Carbon::parse($asignacion->fecha_inicio_operacion)->gt($model['fecha_inicio_viaje']);
+        if($validateDate)
+            return [false , 'la fecha de inicio del viaje no puede ser mayor que la fecha de inicio de operacion establecida en la asignacion'];
+        return [true, $validator->validated()];
     }
 
     /**
@@ -169,5 +176,40 @@ class TravelController extends Controller
                 $result->add($model);
         }
         return $result;
+    }
+
+    public function fillFromJson(Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'file' => 'required|file|mimetypes:application/json|max:20000',
+            ]
+        );
+        if ($validator->fails())
+            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        $document = $request->file('file');
+        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
+        $errors = collect();
+        foreach ($json as $item) {
+            $model = get_object_vars($item);
+            $valid = $this->validateModel($model);
+            if ($valid[0])
+                Travel::create($model);
+            else
+                $errors->add(['error' => $valid[1]]);
+        }
+        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+    }
+
+    /**
+     * por medio de este metodo genera automaticamente la cantidad de viajes que le ingrese por parametro
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function saveRandom($amount) {
+        $result = $this->getRandom($amount);
+        foreach ($result as $model) {
+            $model->save();
+        }
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
 }

@@ -46,6 +46,29 @@ Route::get('assignment/factory/{amount}', 'TimeRouteAssignmentController@getRand
 Route::get('travel/factory/{amount}', 'TravelController@getRandom');
 Route::get('stop/factory/{amount}', 'StopController@getRandom');
 Route::get('route/factory/{amount}', 'RouteController@getRandom');
+
+Route::get('trunk/factory/save/{amount}', 'TrunkController@saveRandom');
+Route::get('station/factory/save/{amount}', 'StationController@saveRandom');
+Route::get('trunkStation/factory/save/{amount}', 'TrunkStationController@saveRandom');
+Route::get('portal/factory/save/{amount}', 'PortalController@saveRandom');
+Route::get('platform/factory/save/{amount}', 'PlatformController@saveRandom');
+Route::get('wagon/factory/save/{amount}', 'WagonController@saveRandom');
 Route::get('route/factory/save/{amount}', 'RouteController@saveRandom');
+Route::get('busType/factory/save/{amount}', 'BusTypeController@saveRandom');
+Route::get('bus/factory/save/{amount}', 'BusController@saveRandom');
+Route::get('schedule/factory/save/{amount}', 'ScheduleController@saveRandom');
+Route::get('assignment/factory/save/{amount}', 'TimeRouteAssignmentController@saveRandom');
+Route::get('travel/factory/save/{amount}', 'TravelController@saveRandom');
+
 Route::post('trunk/factory/fill', 'TrunkController@fillFromJson');
+Route::post('station/factory/fill', 'StationController@fillFromJson');
+Route::post('trunkStation/factory/fill', 'TrunkStationController@fillFromJson');
+Route::post('portal/factory/fill', 'PortalController@fillFromJson');
+Route::post('platform/factory/fill', 'PlatformController@fillFromJson');
 Route::post('wagon/factory/fill', 'WagonController@fillFromJson');
+Route::post('route/factory/fill', 'RouteController@fillFromJson');
+Route::post('busType/factory/fill', 'BusTypeController@fillFromJson');
+Route::post('bus/factory/fill', 'BusController@fillFromJson');
+Route::post('schedule/factory/fill', 'ScheduleController@fillFromJson');
+Route::post('assignment/factory/fill', 'TimeRouteAssignmentController@fillFromJson');
+Route::post('travel/factory/fill', 'TravelController@fillFromJson');

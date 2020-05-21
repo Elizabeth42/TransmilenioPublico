@@ -45,21 +45,36 @@ class TrunkStationController extends Controller
      */
     public function store(Request $request)
     {
+        $valid = $this->validateModel($request->all());
+        if(!$valid[0])
+            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+
+        // se procede con la creacion de la troncal estacion
+        $created = TrunkStation::create($valid[1]);
+        return response($created->toJson(), 200)->header('Content-Type', 'application/json');
+     //   }
+    }
+
+    private function validateModel($model){
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
-        $validator = $this->custom_validator($request->all());
-        if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        $station = Station::find($request->input('id_estacion'));
-        $troncal = Trunk::find($request->input('id_troncal'));
+        $validator = $this->custom_validator($model);
+        if ($validator->fails()) {
+            return [false, $validator->errors()->toJson()];
+        }
+        // permitira validar si en el modelo viene la id_troncal y a id_estacion
+        $troncal = key_exists('id_troncal', $model) ? Trunk::find($model['id_troncal']): null;
+        $station = key_exists('id_estacion', $model) ? Station::find($model['id_estacion']): null;
+
+        // permitira validar que almenos una de las foreign key venga activa
+        if ($troncal==null || $station ==null){
+            return [false , 'La troncal estacion necesita de un id de troncal y un id de estacion'];
+        }
 
         //finalmente se requiere garantizar que esa troncal no tenga asignada ya esa estacion pues ambas deben ser unicas
         if ($station->hasTrunk($troncal->id_troncal))
-            return response('{"error": "la estacion ya tiene esa troncal asociada"}', 300)->header('Content-Type', 'application/json');
+            return [false , 'la estacion ya tiene esa troncal asociada'];
 
-            // se procede con la creacion de la troncal estacion
-            $created = TrunkStation::create($validator->validated());
-            return response($created->toJson(), 200)->header('Content-Type', 'application/json');
-     //   }
+        return [true, $validator->validated()];
     }
 
     /**
@@ -183,5 +198,40 @@ class TrunkStationController extends Controller
                 $result->add($model);
         }
         return $result;
+    }
+
+    public function fillFromJson(Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'file' => 'required|file|mimetypes:application/json|max:20000',
+            ]
+        );
+        if ($validator->fails())
+            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        $document = $request->file('file');
+        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
+        $errors = collect();
+        foreach ($json as $item) {
+            $model = get_object_vars($item);
+            $valid = $this->validateModel($model);
+            if ($valid[0])
+                TrunkStation::create($model);
+            else
+                $errors->add(['error' => $valid[1]]);
+        }
+        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+    }
+
+    /**
+     * por medio de este metodo genera automaticamente la cantidad de troncal_Estacion que le ingrese por parametro
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function saveRandom($amount) {
+        $result = $this->getRandom($amount);
+        foreach ($result as $model) {
+            $model->save();
+        }
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
 }

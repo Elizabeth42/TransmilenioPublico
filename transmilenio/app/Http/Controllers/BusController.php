@@ -43,20 +43,26 @@ class BusController extends Controller
      */
     public function store(Request $request)
     {
-        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
-        $validator = $this->custom_validator($request->all());
-        if ($validator->fails()) {
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        }
-        // permitira validar que la placa ingresada sea unica
-        if(Bus::where('placabus','=',$request->input('placabus'))->count()>0){
-            return response('{"error": "La placa del bus debe ser unica"}', 300)->header('Content-Type', 'application/json');
-        }
-        //se encargara de crear el portal con la informacion del json
-        $created = Bus::create($validator->validated());
+        $valid = $this->validateModel($request->all());
+        if(!$valid[0])
+            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+        //se encargara de crear el vagon con la informacion del json
+        $created = Bus::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
+    private function validateModel($model){
+        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
+        $validator = $this->custom_validator($model);
+        if ($validator->fails()) {
+            return [false, $validator->errors()->toJson()];
+        }
+        // permitira validar que la placa ingresada sea unica
+        if(Bus::where('placabus','=',$model['placabus'])->count()>0) {
+            return [false, 'La placa del bus debe ser unica'];
+        }
+        return [true, $validator->validated()];
+    }
     /**
      * Display the specified resource.
      *
@@ -168,5 +174,40 @@ class BusController extends Controller
                 $result->add($model);
         }
         return $result;
+    }
+
+    public function fillFromJson(Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'file' => 'required|file|mimetypes:application/json|max:20000',
+            ]
+        );
+        if ($validator->fails())
+            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        $document = $request->file('file');
+        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
+        $errors = collect();
+        foreach ($json as $item) {
+            $model = get_object_vars($item);
+            $valid = $this->validateModel($model);
+            if ($valid[0])
+                Bus::create($model);
+            else
+                $errors->add(['error' => $valid[1]]);
+        }
+        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+    }
+
+    /**
+     * por medio de este metodo genera automaticamente la cantidad de buses que le ingrese por parametro
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function saveRandom($amount) {
+        $result = $this->getRandom($amount);
+        foreach ($result as $model) {
+            $model->save();
+        }
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
 }

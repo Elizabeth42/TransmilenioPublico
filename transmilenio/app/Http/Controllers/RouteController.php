@@ -40,12 +40,21 @@ class RouteController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = $this->custom_validator($request->all());
-        if ($validator->fails()) {
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        }
-        $created = Route::create($validator->validated());
+        $valid = $this->validateModel($request->all());
+        if(!$valid[0])
+            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+        //se encargara de crear el portal con la informacion del json
+        $created = Route::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
+    }
+
+    private function validateModel($model){
+        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
+        $validator = $this->custom_validator($model);
+        if ($validator->fails()) {
+            return [false, $validator->errors()->toJson()];
+        }
+        return [true, $validator->validated()];
     }
 
     /**
@@ -138,9 +147,33 @@ class RouteController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(Route::class)->make();
-            $result->add($model);
+            $validator = $this->custom_validator($model->attributesToArray());
+            if (!$validator->fails())
+                $result->add($model);
         }
         return $result;
+    }
+
+    public function fillFromJson(Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'file' => 'required|file|mimetypes:application/json|max:20000',
+            ]
+        );
+        if ($validator->fails())
+            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        $document = $request->file('file');
+        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
+        $errors = collect();
+        foreach ($json as $item) {
+            $model = get_object_vars($item);
+            $valid = $this->validateModel($model);
+            if ($valid[0])
+                Route::create($model);
+            else
+                $errors->add(['error' => $valid[1]]);
+        }
+        return response('{"message": "Congratulations Prosseced Routes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     public function saveRandom($amount) {

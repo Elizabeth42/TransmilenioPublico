@@ -135,7 +135,6 @@ class StationController extends Controller
         );
     }
 
-
     public function getRandom($amount) {
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
@@ -145,5 +144,32 @@ class StationController extends Controller
                 $result->add($model);
         }
         return $result;
+    }
+
+    public function fillFromJson(Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'file' => 'required|file|mimetypes:application/json|max:20000',
+            ]
+        );
+        if ($validator->fails())
+            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        $document = $request->file('file');
+        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
+        foreach ($json as $item) {
+            $model = get_object_vars($item);
+            $validator = $this->custom_validator($model);
+            if (!$validator->fails())
+                Station::create($model);
+        }
+        return response('{"message": "Congratulations!!!!!!!!!"}', 200)->header('Content-Type', 'application/json');
+    }
+
+    public function saveRandom($amount) {
+        $result = $this->getRandom($amount);
+        foreach ($result as $model) {
+            $model->save();
+        }
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
 }

@@ -45,21 +45,28 @@ class TimeRouteAssignmentController extends Controller
      */
     public function store(Request $request)
     {
-        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
-        $validator = $this->custom_validator($request->all());
-        if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-
-        //es necesario garantizar que esas tres no se encuentren ya asociadas en la tabla asignacion_ruta_horario
-        $exist = TimeRouteAssignment::where('id_ruta', '=', $request->input('id_ruta'))
-            ->where('id_bus', '=', $request->input('id_bus'))
-            ->where('id_horario', '=', $request->input('id_horario'))
-            ->whereDate('fecha_inicio_operacion', '=', $request->input('fecha_inicio_operacion'))->count();
-        if($exist>0)
-            return response('{"error": "la ruta, el horario, el bus y la fecha de inicio ya fueron asignadas"}', 300)->header('Content-Type', 'application/json');
-        // se procede con la creacion de la asignacion
-        $created = TimeRouteAssignment::create($validator->validated());
+        $valid = $this->validateModel($request->all());
+        if(!$valid[0])
+            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+        //se encargara de crear la asignacion con la informacion del json
+        $created = TimeRouteAssignment::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
+    }
+
+    private function validateModel($model){
+        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
+        $validator = $this->custom_validator($model);
+        if ($validator->fails()) {
+            return [false, $validator->errors()->toJson()];
+        }
+        //es necesario garantizar que esas tres no se encuentren ya asociadas en la tabla asignacion_ruta_horario
+        $exist = TimeRouteAssignment::where('id_ruta', '=', $model['id_ruta'])
+            ->where('id_bus', '=', $model['id_bus'])
+            ->where('id_horario', '=', $model['id_horario'])
+            ->whereDate('fecha_inicio_operacion', '=', $model['fecha_inicio_operacion'])->count();
+        if($exist>0)
+            return [false , 'la ruta, el horario, el bus y la fecha de inicio ya fueron asignadas'];
+        return [true, $validator->validated()];
     }
 
     /**
@@ -205,5 +212,40 @@ class TimeRouteAssignmentController extends Controller
                 $result->add($model);
         }
         return $result;
+    }
+
+    public function fillFromJson(Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'file' => 'required|file|mimetypes:application/json|max:20000',
+            ]
+        );
+        if ($validator->fails())
+            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        $document = $request->file('file');
+        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
+        $errors = collect();
+        foreach ($json as $item) {
+            $model = get_object_vars($item);
+            $valid = $this->validateModel($model);
+            if ($valid[0])
+                TimeRouteAssignment::create($model);
+            else
+                $errors->add(['error' => $valid[1]]);
+        }
+        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+    }
+
+    /**
+     * por medio de este metodo genera automaticamente la cantidad de asignaciones que le ingrese por parametro
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function saveRandom($amount) {
+        $result = $this->getRandom($amount);
+        foreach ($result as $model) {
+            $model->save();
+        }
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
 }

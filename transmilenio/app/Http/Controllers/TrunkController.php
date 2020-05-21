@@ -139,7 +139,12 @@ class TrunkController extends Controller
         );
     }
 
-
+    /**
+     * Permitira generar la cantidad de troncales que le entren por parametro y que cumplan con las validaciones
+     * (visualmente no en la base de datos)
+     * @param $amount
+     * @return \Illuminate\Support\Collection
+     */
     public function getRandom($amount) {
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
@@ -151,6 +156,12 @@ class TrunkController extends Controller
         return $result;
     }
 
+    /**
+     * El request que ingresa es un documento JSON de maximo 20 Kb  por medio del validator se encarga de asegurar que
+     * no haya errores, y en caso de haberlos esos datos no sera cargados continuando con los siguientes
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function fillFromJson(Request $request){
         $validator = Validator::make($request->all(),
             [
@@ -168,5 +179,18 @@ class TrunkController extends Controller
                 Trunk::create($model);
         }
         return response('{"message": "Congratulations!!!!!!!!!"}', 200)->header('Content-Type', 'application/json');
+    }
+
+    /**
+     * por medio de este metodo genera automaticamente la cantidad de troncales que le ingrese por parametro
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function saveRandom($amount) {
+        $result = $this->getRandom($amount);
+        foreach ($result as $model) {
+            $model->save();
+        }
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
 }
