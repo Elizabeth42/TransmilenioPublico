@@ -193,4 +193,17 @@ class TrunkController extends Controller
         }
         return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
+
+//    /**
+//     * Permitira
+//     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+//     */
+//    public function download(){
+//        $content = \App\Trunk::all();
+//        return response($content)
+//            ->withHeaders([
+//                'Content-Type' => 'application/json',
+//                'Content-disposition' => 'attachment; filename=users.json'
+//            ]);
+//    }
 }

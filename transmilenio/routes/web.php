@@ -39,13 +39,13 @@ Route::get('trunkStation/factory/{amount}', 'TrunkStationController@getRandom');
 Route::get('portal/factory/{amount}', 'PortalController@getRandom');
 Route::get('platform/factory/{amount}', 'PlatformController@getRandom');
 Route::get('wagon/factory/{amount}', 'WagonController@getRandom');
-Route::get('bus/factory/{amount}', 'BusController@getRandom');
+Route::get('route/factory/{amount}', 'RouteController@getRandom');
 Route::get('busType/factory/{amount}', 'BusTypeController@getRandom');
+Route::get('bus/factory/{amount}', 'BusController@getRandom');
 Route::get('schedule/factory/{amount}', 'ScheduleController@getRandom');
 Route::get('assignment/factory/{amount}', 'TimeRouteAssignmentController@getRandom');
 Route::get('travel/factory/{amount}', 'TravelController@getRandom');
 Route::get('stop/factory/{amount}', 'StopController@getRandom');
-Route::get('route/factory/{amount}', 'RouteController@getRandom');
 
 Route::get('trunk/factory/save/{amount}', 'TrunkController@saveRandom');
 Route::get('station/factory/save/{amount}', 'StationController@saveRandom');
@@ -59,6 +59,7 @@ Route::get('bus/factory/save/{amount}', 'BusController@saveRandom');
 Route::get('schedule/factory/save/{amount}', 'ScheduleController@saveRandom');
 Route::get('assignment/factory/save/{amount}', 'TimeRouteAssignmentController@saveRandom');
 Route::get('travel/factory/save/{amount}', 'TravelController@saveRandom');
+Route::get('stop/factory/save/{amount}', 'StopController@saveRandom');
 
 Route::post('trunk/factory/fill', 'TrunkController@fillFromJson');
 Route::post('station/factory/fill', 'StationController@fillFromJson');
@@ -72,3 +73,30 @@ Route::post('bus/factory/fill', 'BusController@fillFromJson');
 Route::post('schedule/factory/fill', 'ScheduleController@fillFromJson');
 Route::post('assignment/factory/fill', 'TimeRouteAssignmentController@fillFromJson');
 Route::post('travel/factory/fill', 'TravelController@fillFromJson');
+Route::post('stop/factory/fill', 'StopController@fillFromJson');
+
+/*estas rutas seran para descargar los datos desde la base de datos
+lo unico es pasarle los modelos por parametro, por ejemplo
+http://localhost:8000/download/route
+http://localhost:8000/download/wagon
+http://localhost:8000/download/stop
+http://localhost:8000/download/trunk
+*/
+Route::get('/download/{model}', function ($model) {
+    if($model == 'stop')
+    {
+        $content = collect();
+        foreach (\App\Route::all() as $route)
+            $content->add([ $route->getKey() => $route->wagons()->withPivot('estado_parada', 'orden')->get()]);
+    }
+    else {
+        $instance = '\\App\\'.\Illuminate\Support\Str::studly($model);
+        $content = $instance::all();
+    }
+    return response($content)
+        ->withHeaders([
+            'Content-Type' => 'application/json',
+            'Content-disposition' => 'attachment; filename='.$model.'s.json'
+        ]);
+});
+
