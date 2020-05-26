@@ -11,11 +11,11 @@ class TrunkStation extends Model
     public $timestamps = false;
     protected $fillable = ['id_estacion','id_troncal','activo_troncal_estacion'];
 
-    public function  trunks(){
+    public function  trunk(){
         return $this->belongsTo('App\Trunk','id_troncal' ,'id_troncal');
     }
 
-    public function  stations(){
+    public function  station(){
         return $this->belongsTo('App\Station','id_estacion', 'id_estacion');
     }
 

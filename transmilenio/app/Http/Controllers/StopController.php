@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Route;
 use App\Wagon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use function Sodium\add;
 
 class StopController extends Controller
 {
@@ -26,7 +25,11 @@ class StopController extends Controller
             $active = request()->header('active');
             return response($route->wagons()->withPivot('estado_parada', 'orden')->where('paradas.estado_parada', '=', $active)->get());
         }
-        return response($route->wagons()->withPivot('estado_parada', 'orden')->get()->toJson(), 200)->header('Content-Type', 'application/json');
+        $list = $route->wagons()->withPivot('estado_parada', 'orden')
+            ->with('platform')
+            ->with('trunk_station')
+            ->orderBy('pivot_orden','asc')->get();
+        return response($list, 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -38,29 +41,56 @@ class StopController extends Controller
      */
     public function add_wagons_to_route(Request $request, $id)
     {
+        $valid = $this->validateModel($request->all(), $id);
+        if(!$valid[0])
+            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+        $route = Route::find($id);
+        foreach ($valid[1] as $parada) {
+            $id_wagon = $parada['id_vagon'];
+            if(!$valid[2]->has($id_wagon))
+                $route->wagons()->attach($id_wagon,['estado_parada' => $parada['estado_parada'], 'orden' => $parada['orden']]);
+        }
+        return response('{"success": "Agregadas correctamente los vagones a la ruta", "errors": '.$valid[2]->toJson().'}', 200)->header('Content-Type', 'application/json');
+    }
+
+    private function validateModel($model, $id){
         $route = Route::find($id);
         if (!isset($route))
-            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return [false, 'La ruta no existe'];
         if ($route->activo_ruta == 'n')
-            return response('{"error": "La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
-        $validator = $this->custom_validator($request->all());
-        if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return [false, 'La ruta se encuentra inactiva'];
+        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
+        $validator = $this->custom_validator($model);
+        if ($validator->fails()) {
+            return [false, $validator->errors()->toJson()];
+        }
+        $errors = collect();
+        $stops = collect();
         $paradas = $validator->validated()['wagons'];
-        foreach ($paradas as $key => $parada) {
+        foreach ($paradas as $parada) {
             $id_wagon = $parada['id_vagon'];
             $wagon = Wagon::find($id_wagon);
+            if(!isset($wagon)){
+                $errors->add([$id_wagon => 'El vagon '.$id_wagon.' no existe']);
+                continue;
+            }
+            if($wagon->activo_vagon != 'a'){
+                $errors->add([$id_wagon => 'El vagon '.$id_wagon.' no se encuentra activo']);
+                continue;
+            }
             // permitira establecer si la ruta ya tiene este vagon asociado y si el vagon se encuentra activo
-            if ($route->hasWagon($id_wagon))
-                return response('{"error": "el vagon ya se encuentra asignado a esta ruta"}', 300)->header('Content-Type', 'application/json');
-            //unset($paradas[$key]);
+            if ($route->hasWagon($id_wagon)){
+                $errors->add([$id_wagon => 'El vagon ya se encuentra asignado a esta ruta']);
+                continue;
+            }
             // El ultimo vagon asignado a esa ruta
             $last_bus_stop = $route->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
+            $parada['id_vagon']=$id_wagon;
             // basicamente se pregunta que si existe un ultomo vagon y a partir de ello se asigna el orden
-            $orden = isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1;
-            $route->wagons()->attach($id_wagon, ['estado_parada' => $parada['estado_parada'], 'orden' => $orden]);
+            $parada['orden']=isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1;
+            $stops->add($parada);
         }
-        return response('{"success": "Agregadas correctamente los vagones a la ruta"}', 200)->header('Content-Type', 'application/json');
+        return [true, $stops, $errors];
     }
 
     /**
@@ -121,11 +151,7 @@ class StopController extends Controller
         return Validator::make($data,
             [
                 'wagons' => 'required|array',
-                'wagons.*.id_vagon' => ['required',
-                    Rule::exists('vagones', '')->where(function ($query) {
-                        $query->where('activo_vagon', 'a');
-                    })
-                ],
+                'wagons.*.id_vagon' => 'required',
                 'wagons.*.estado_parada' => 'required|in:a,n'
             ],
             ['wagons.required' => 'Los vagones debe ser obligatorio',
@@ -151,4 +177,6 @@ class StopController extends Controller
         }
         return $result;
     }
+
+
 }

@@ -44,7 +44,7 @@ class BusTypeController extends Controller
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
             return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
-        //se encargara de crear el portal con la informacion del json
+        //se encargara de crear el tipo de bus con la informacion del json
         $created = BusType::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }

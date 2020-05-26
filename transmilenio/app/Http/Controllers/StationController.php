@@ -43,12 +43,21 @@ class StationController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = $this->custom_validator($request->all());
-        if ($validator->fails()) {
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
-        }
-        $created = Station::create($validator->validated());
+        $valid = $this->validateModel($request->all());
+        if(!$valid[0])
+            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+        //se encargara de crear el portal con la informacion del json
+        $created = Station::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
+    }
+
+    private function validateModel($model){
+        // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
+        $validator = $this->custom_validator($model);
+        if ($validator->fails()) {
+            return [false, $validator->errors()->toJson()];
+        }
+        return [true, $validator->validated()];
     }
 
     /**
@@ -156,13 +165,16 @@ class StationController extends Controller
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
+        $errors = collect();
         foreach ($json as $item) {
             $model = get_object_vars($item);
-            $validator = $this->custom_validator($model);
-            if (!$validator->fails())
+            $valid = $this->validateModel($model);
+            if ($valid[0])
                 Station::create($model);
+            else
+                $errors->add(['error' => $valid[1]]);
         }
-        return response('{"message": "Congratulations!!!!!!!!!"}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "Congratulations Prosseced BusTypes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     public function saveRandom($amount) {

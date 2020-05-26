@@ -11,12 +11,12 @@ class Wagon extends Model
     public $timestamps = false;
     protected $fillable = ['id_plataforma','id_troncal_estacion','numero_vagon','activo_vagon'];
 
-    public function  platforms(){
-        return $this->belongsTo('App\Platform', $ownerKey='id_plataforma');
+    public function  platform(){
+        return $this->belongsTo('App\Platform', 'id_plataforma', 'id_plataforma');
     }
 
     public function trunk_station(){
-        return $this->belongsTo('App\TrunkStation', 'id_troncal_estacion', 'id_troncal_estacion');
+        return $this->belongsTo('App\TrunkStation', 'id_troncal_estacion', 'id_troncal_estacion')->with('trunk')->with('station');
     }
 
     //permitira saber si un id de ruta se encuentra asociada al vagon

@@ -14,7 +14,7 @@ class Platform extends Model
     public function  wagons(){
         return $this->hasMany('App\Wagon', 'id_plataforma', 'id_plataforma');
     }
-    public function  Portals(){
+    public function  portal(){
         return $this->belongsTo('App\Portal', 'id_portal', 'id_portal');
     }
     public function  hasNumberWagon(int $numeroVagon){
