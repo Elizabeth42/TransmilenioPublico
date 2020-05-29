@@ -178,5 +178,55 @@ class StopController extends Controller
         return $result;
     }
 
+    public function fillFromJson(Request $request, $id){
+        $route = Route::find($id);
+        $validator = Validator::make($request->all(),
+            [
+                'file' => 'required|file|mimetypes:application/json|max:20000',
+            ]
+        );
+        if ($validator->fails())
+            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+        $document = $request->file('file');
+        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
+        $errors = collect();
+        foreach ($json as $item) {
+            $model = get_object_vars($item);
+            $valid = $this->validateModel($model);
+            if ($valid[0])
+                $route->wagons()->attach($model);
+            else
+                $errors->add(['error' => $valid[1]]);
+        }
+        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+    }
+
+    /**
+     * por medio de este metodo genera automaticamente la cantidad de buses que le ingrese por parametro
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function saveRandom($amount) {
+        $result = $this->getRandom($amount);
+        foreach ($result as $model) {
+            $model->save();
+        }
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+    }
+
+
+    /**
+     * Este metodo permite guardar el archivo json de una cantidad de elementos random creados segun el parametro que entra
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function saveFactoryJson($amount){
+        $content = $this->getRandom($amount);
+        return response($content)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'Content-disposition' => 'attachment; filename=Stop'.$amount.'Random.json'
+            ]);
+    }
 
 }

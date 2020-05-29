@@ -207,6 +207,15 @@ class TrunkController extends Controller
         return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
 
+    public function saveFactoryJson($amount){
+        $content = $this->getRandom($amount);
+        return response($content)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'Content-disposition' => 'attachment; filename=Trunk'.$amount.'Random.json'
+            ]);
+    }
+
 //    /**
 //     * Permitira
 //     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response

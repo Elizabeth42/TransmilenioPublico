@@ -234,4 +234,18 @@ class TrunkStationController extends Controller
         }
         return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }
+
+    /**
+     * Este metodo permite guardar el archivo json de una cantidad de elementos random creados segun el parametro que entra
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function saveFactoryJson($amount){
+        $content = $this->getRandom($amount);
+        return response($content)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'Content-disposition' => 'attachment; filename=TrunkStation'.$amount.'Random.json'
+            ]);
+    }
 }
