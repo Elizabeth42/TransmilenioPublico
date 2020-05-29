@@ -22,7 +22,7 @@ class PlatformSeed extends Seeder
 
 
     public static function validate($platform){
-        if ($platform->Portals()->first()->activo_portal != 'n') {
+        if ($platform->portal()->first()->activo_portal != 'n') {
             return true;
         }
         return false;

@@ -20,7 +20,7 @@ class RouteSeed extends Seeder
             $randomR = $routes->random();
             $stop = self::validate($randomW, $randomR);
             if(isset($stop))
-                $randomR->wagons()->attach($stop);
+                $randomR->wagons()->attach($stop['id_vagon'], ['estado_parada' => $stop['estado_parada'], 'orden'=>$stop['orden'] ]);
         }
     }
 
@@ -30,10 +30,10 @@ class RouteSeed extends Seeder
             if ($randomR->wagons()->count() > 0)
                 $last_bus_stop = $randomR->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
             return [
-                $randomW->id_vagon => [
+                    'id_vagon' => $randomW->id_vagon,
+                    'id_ruta' => $randomR->id_ruta,
                     'estado_parada' => rand(0, 1) == 0 ? 'n' : 'a',
                     'orden' => isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1
-                ]
             ];
         }
         return null;

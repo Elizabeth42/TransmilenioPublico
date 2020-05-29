@@ -11,7 +11,7 @@ class Portal extends Model
     public $timestamps = false;
     protected $fillable = ['nombre_portal','id_troncal','activo_portal'];
 
-    public function  trunks(){
+    public function  trunk(){
         return $this->belongsTo('App\Trunk', 'id_troncal','id_troncal');
     }
     public function  platforms(){

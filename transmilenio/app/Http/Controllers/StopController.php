@@ -178,8 +178,7 @@ class StopController extends Controller
         return $result;
     }
 
-    public function fillFromJson(Request $request, $id){
-        $route = Route::find($id);
+    public function fillFromJson(Request $request){
         $validator = Validator::make($request->all(),
             [
                 'file' => 'required|file|mimetypes:application/json|max:20000',
@@ -188,16 +187,21 @@ class StopController extends Controller
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
         $document = $request->file('file');
-        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();
-        foreach ($json as $item) {
-            $model = get_object_vars($item);
-            $valid = $this->validateModel($model);
-            if ($valid[0])
-                $route->wagons()->attach($model);
-            else
-                $errors->add(['error' => $valid[1]]);
+        $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()), true);
+        foreach ($json as $stop)
+        {
+            $route = Route::find($stop['id_ruta']);
+            $valid = $this->validateModel(['wagons'=>[$stop]], $stop['id_ruta']);
+            if(!$valid[0])
+                $errors->add($valid[1]);
+            else if (sizeof($valid[2]) > 0)
+                $errors->add($valid[2]);
+            foreach ($valid[1] as $model) {
+                $route->wagons()->attach($model['id_vagon'], ['estado_parada' => $model['estado_parada'], 'orden'=>$model['orden']]);
+            }
         }
+
         return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 

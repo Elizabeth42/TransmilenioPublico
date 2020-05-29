@@ -21,7 +21,7 @@ class PortalSeed extends Seeder
     }
 
     public static function validate($portal){
-        if ($portal->trunks()->first()->activo_troncal != 'n') {
+        if ($portal->trunk()->first()->activo_troncal != 'n') {
             return true;
         }
         return false;
