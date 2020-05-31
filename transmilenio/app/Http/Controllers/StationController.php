@@ -148,8 +148,8 @@ class StationController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(Station::class)->make();
-            $validator = $this->custom_validator($model->attributesToArray());
-            if (!$validator->fails())
+//            $validator = $this->custom_validator($model->attributesToArray());
+//            if (!$validator->fails())
                 $result->add($model);
         }
         return $result;

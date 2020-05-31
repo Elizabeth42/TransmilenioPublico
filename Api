@@ -1,4 +1,5 @@
 TRUNKS
+-- Estas son las rutas basicas de la CRUD permitiran CREAR BUSCAR ACTUALIZAR Y ELIMINAR (CAMBIAR ESTADO)
  - POST - http://localhost:8000/api/trunk
 	{
 		"nombre_troncal"  : "Caracas",		
@@ -15,6 +16,25 @@ TRUNKS
 		"color_troncal"	:"#F40F0F",
 		"activo_troncal": "n"
 	}
+ - DELETE - http://localhost:8000/api/trunk/12 - El 12 hace referencia al id de la TRONCAL a la cual se le cambiara de estado
+ 
+-- Esta ruta permite generar aleatoriamente x cantidad de elementos aleatorios nuevos,
+-- solo se crean no se almacenan en la base de datos ni en un archivo
+ - GET - http://localhost:8000/api/trunk/factory/10 - El 10 es la cantidad de elementos aleatorios que va a generar
+
+-- Esta ruta permite generar y guardar x cantidad de elementos en la base de datos
+ - GET - http://localhost:8000/api/trunk/factory/save/7 - El 7 es la cantidad de elementos que guardara en la base de datos
+ 
+-- Esta ruta permite guardar un archivo de tipo JSON con la cantidad que le entre por parametro
+ - GET - http://localhost:8000/api/trunk/get/11 - El 11 es la cantidad de elementos aleatorios que contiene el archivo Json que se va a descargar
+	
+-- Esta ruta permite tomar un archivo de tipo JSON y guarda su contenido en la base de datos, si un elemento tiene error 
+-- no lo guarda y aparte muestra la razon por la cual el mismo no fue guardado
+ - POST - http://localhost:8000/api/trunk/factory/fill 
+ 
+-- Esta ruta permite guardar todos los elementos de la entidad troncal de la base de datos en un archivo JSON
+ - GET - http://localhost:8000/api/download/trunk
+...................................................................................................................................................................................... 
 STATIONS
 - POST - http://localhost:8000/api/station
 	{
@@ -28,6 +48,26 @@ STATIONS
 		"nombre_estacion": "Banderas",
 		"activo_estacion": "n"
 	}
+
+ - DELETE - http://localhost:8000/api/station/12 - El 12 hace referencia al id de la ESTACION a la cual se le cambiara de estado
+
+-- Esta ruta permite generar aleatoriamente x cantidad de elementos aleatorios nuevos,
+-- solo se crean no se almacenan en la base de datos ni en un archivo
+ - GET - http://localhost:8000/api/station/factory/10 - El 10 es la cantidad de elementos aleatorios que va a generar
+
+-- Esta ruta permite generar y guardar x cantidad de elementos en la base de datos
+ - GET - http://localhost:8000/api/station/factory/save/7 - El 7 es la cantidad de elementos que guardara en la base de datos
+ 
+-- Esta ruta permite guardar un archivo de tipo JSON con la cantidad que le entre por parametro
+ - GET - http://localhost:8000/api/station/factory/get/10 - El 10 es la cantidad de elementos aleatorios que contiene el archivo Json que se va a descargar
+
+-- Esta ruta permite tomar un archivo de tipo JSON y guarda su contenido en la base de datos, si un elemento tiene error 
+-- no lo guarda y aparte muestra la razon por la cual el mismo no fue guardado
+ - POST - http://localhost:8000/api/station/factory/fill 
+
+-- Esta ruta permite guardar todos los elementos de la entidad troncal de la base de datos en un archivo JSON
+ - GET - http://localhost:8000/api/download/station
+...........................................................................................................................................................
 TRUNKSSTATIONS
 - POST - http://localhost:8000/api/trunkStation
 	{
@@ -43,6 +83,26 @@ TRUNKSSTATIONS
 		"id_troncal": 2,
 		"activo_troncal_estacion": "a"
 	}
+ - DELETE - http://localhost:8000/api/trunkStation/2 - El 2 hace referencia al id de la TRONCAL_ESTACION a la cual se le cambiara de estado	
+ 
+-- Esta ruta permite generar aleatoriamente x cantidad de elementos aleatorios nuevos,
+-- solo se crean no se almacenan en la base de datos ni en un archivo
+ - GET - http://localhost:8000/api/trunkStation/factory/10 - El 10 es la cantidad de elementos aleatorios que va a generar
+
+-- Esta ruta permite generar y guardar x cantidad de elementos en la base de datos
+ - GET - http://localhost:8000/api/trunkStation/factory/save/7 - El 7 es la cantidad de elementos que guardara en la base de datos
+ 
+-- Esta ruta permite guardar un archivo de tipo JSON con la cantidad que le entre por parametro
+ - GET - http://localhost:8000/api/trunkStation/factory/get/10 - El 10 es la cantidad de elementos aleatorios que contiene el archivo Json que se va a descargar
+
+-- Esta ruta permite tomar un archivo de tipo JSON y guarda su contenido en la base de datos, si un elemento tiene error 
+-- no lo guarda y aparte muestra la razon por la cual el mismo no fue guardado
+ - POST - http://localhost:8000/api/trunkStation/factory/fill 
+
+-- Esta ruta permite guardar todos los elementos de la entidad troncal de la base de datos en un archivo JSON
+ - GET - http://localhost:8000/api/download/trunkStation
+ 
+.......................................................................................................................................................	
 PORTALS
 - POST - http://localhost:8000/api/portal
 	{
@@ -58,6 +118,26 @@ PORTALS
 		"nombre_portal": "PORTAL DE LA 80",
 		"activo_portal": "a"
 	}
+ - DELETE - http://localhost:8000/api/portal/2 - El 2 hace referencia al id del PORTAL aL cual se le cambiara de estado	
+
+-- Esta ruta permite generar aleatoriamente x cantidad de elementos aleatorios nuevos,
+-- solo se crean no se almacenan en la base de datos ni en un archivo
+ - GET - http://localhost:8000/api/portal/factory/10 - El 10 es la cantidad de elementos aleatorios que va a generar
+
+-- Esta ruta permite generar y guardar x cantidad de elementos en la base de datos
+ - GET - http://localhost:8000/api/portal/factory/save/7 - El 7 es la cantidad de elementos que guardara en la base de datos
+ 
+-- Esta ruta permite guardar un archivo de tipo JSON con la cantidad que le entre por parametro
+ - GET - http://localhost:8000/api/portal/factory/get/10 - El 10 es la cantidad de elementos aleatorios que contiene el archivo Json que se va a descargar
+
+-- Esta ruta permite tomar un archivo de tipo JSON y guarda su contenido en la base de datos, si un elemento tiene error 
+-- no lo guarda y aparte muestra la razon por la cual el mismo no fue guardado
+ - POST - http://localhost:8000/api/portal/factory/fill
+
+-- Esta ruta permite guardar todos los elementos de la entidad troncal de la base de datos en un archivo JSON
+ - GET - http://localhost:8000/api/download/portal
+
+........................................................................................................................................................................
 PLATFORMS
 - POST - http://localhost:8000/api/platform
 	{
@@ -73,6 +153,26 @@ PLATFORMS
 		"numero_plataforma": 4,
 		"activo_plataforma": "n"
 	}
+
+ - DELETE - http://localhost:8000/api/platform/2 - El 2 hace referencia al id de la PLATAFORMA aL cual se le cambiara de estado	
+
+-- Esta ruta permite generar aleatoriamente x cantidad de elementos aleatorios nuevos,
+-- solo se crean no se almacenan en la base de datos ni en un archivo
+ - GET - http://localhost:8000/api/platform/factory/10 - El 10 es la cantidad de elementos aleatorios que va a generar
+
+-- Esta ruta permite generar y guardar x cantidad de elementos en la base de datos
+ - GET - http://localhost:8000/api/platform/factory/save/7 - El 7 es la cantidad de elementos que guardara en la base de datos
+ 
+-- Esta ruta permite guardar un archivo de tipo JSON con la cantidad que le entre por parametro
+ - GET - http://localhost:8000/api/platform/factory/get/10 - El 10 es la cantidad de elementos aleatorios que contiene el archivo Json que se va a descargar
+
+-- Esta ruta permite tomar un archivo de tipo JSON y guarda su contenido en la base de datos, si un elemento tiene error 
+-- no lo guarda y aparte muestra la razon por la cual el mismo no fue guardado
+ - POST - http://localhost:8000/api/platform/factory/fill
+
+-- Esta ruta permite guardar todos los elementos de la entidad troncal de la base de datos en un archivo JSON
+ - GET - http://localhost:8000/api/download/platform
+........................................................................................................................................................................
 WAGONS
 - POST - http://localhost:8000/api/wagon
 	{
@@ -100,6 +200,26 @@ WAGONS
 		"numero_vagon": "6",
 		"activo_vagon": "n"
 	}
+
+ - DELETE - http://localhost:8000/api/wagon/2 - El 2 hace referencia al id del VAGON aL cual se le cambiara de estado	
+
+-- Esta ruta permite generar aleatoriamente x cantidad de elementos aleatorios nuevos,
+-- solo se crean no se almacenan en la base de datos ni en un archivo
+ - GET - http://localhost:8000/api/wagon/factory/10 - El 10 es la cantidad de elementos aleatorios que va a generar
+
+-- Esta ruta permite generar y guardar x cantidad de elementos en la base de datos
+ - GET - http://localhost:8000/api/wagon/factory/save/7 - El 7 es la cantidad de elementos que guardara en la base de datos
+ 
+-- Esta ruta permite guardar un archivo de tipo JSON con la cantidad que le entre por parametro
+ - GET - http://localhost:8000/api/wagon/factory/get/10 - El 10 es la cantidad de elementos aleatorios que contiene el archivo Json que se va a descargar
+
+-- Esta ruta permite tomar un archivo de tipo JSON y guarda su contenido en la base de datos, si un elemento tiene error 
+-- no lo guarda y aparte muestra la razon por la cual el mismo no fue guardado
+ - POST - http://localhost:8000/api/wagon/factory/fill
+
+-- Esta ruta permite guardar todos los elementos de la entidad troncal de la base de datos en un archivo JSON
+ - GET - http://localhost:8000/api/download/wagon
+.......................................................................................................................................................
 ROUTES
 - POST - http://localhost:8000/api/route
 	{
@@ -113,6 +233,25 @@ ROUTES
 		"codigo_ruta": "AC86",
 		"activo_ruta": "n"
 	}
+ - DELETE - http://localhost:8000/api/route/2 - El 2 hace referencia al id de la RUTA aL cual se le cambiara de estado	
+
+-- Esta ruta permite generar aleatoriamente x cantidad de elementos aleatorios nuevos,
+-- solo se crean no se almacenan en la base de datos ni en un archivo
+ - GET - http://localhost:8000/api/route/factory/10 - El 10 es la cantidad de elementos aleatorios que va a generar
+
+-- Esta ruta permite generar y guardar x cantidad de elementos en la base de datos
+ - GET - http://localhost:8000/api/route/factory/save/7 - El 7 es la cantidad de elementos que guardara en la base de datos
+ 
+-- Esta ruta permite guardar un archivo de tipo JSON con la cantidad que le entre por parametro
+ - GET - http://localhost:8000/api/route/factory/get/10 - El 10 es la cantidad de elementos aleatorios que contiene el archivo Json que se va a descargar
+
+-- Esta ruta permite tomar un archivo de tipo JSON y guarda su contenido en la base de datos, si un elemento tiene error 
+-- no lo guarda y aparte muestra la razon por la cual el mismo no fue guardado
+ - POST - http://localhost:8000/api/route/factory/fill
+
+-- Esta ruta permite guardar todos los elementos de la entidad troncal de la base de datos en un archivo JSON
+ - GET - http://localhost:8000/api/download/route
+................................................................................................................................................................
 STOPS
 - POST - http://localhost:8000/api/route/1/wagon -> acaa se le esta diciendo que la RUTA 1 tendra los vagones asociados del JSON
 	{

@@ -165,8 +165,8 @@ class PlatformController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(Platform::class)->make();
-            $valid = \PlatformSeed::validate($model);
-            if ($valid)
+//            $valid = \PlatformSeed::validate($model);
+//            if ($valid)
                 $result->add($model);
         }
         return $result;
@@ -202,7 +202,9 @@ class PlatformController extends Controller
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
         foreach ($result as $model) {
-            $model->save();
+            $valid = \PlatformSeed::validate($model);
+            if ($valid)
+                $model->save();
         }
         return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }

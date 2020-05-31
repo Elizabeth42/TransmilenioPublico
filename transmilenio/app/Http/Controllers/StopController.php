@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Route;
 use App\Wagon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use RouteSeed;
 use function Sodium\add;
 
 class StopController extends Controller
@@ -47,6 +49,11 @@ class StopController extends Controller
         $route = Route::find($id);
         foreach ($valid[1] as $parada) {
             $id_wagon = $parada['id_vagon'];
+            // El ultimo vagon asignado a esa ruta
+            $last_bus_stop = $route->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
+            $parada['id_vagon']=$id_wagon;
+            // basicamente se pregunta que si existe un ultomo vagon y a partir de ello se asigna el orden
+            $parada['orden']=isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1;
             if(!$valid[2]->has($id_wagon))
                 $route->wagons()->attach($id_wagon,['estado_parada' => $parada['estado_parada'], 'orden' => $parada['orden']]);
         }
@@ -171,7 +178,7 @@ class StopController extends Controller
         for ($i = 0; $i < $amount; $i++) {
             $randomW = $wagons->random();
             $randomR = $routes->random();
-            $stop = \RouteSeed::validate($randomW, $randomR);
+            $stop = \RouteSeed::addStop($randomW, $randomR);
             if (isset($stop))
                 $result->add($stop);
         }
@@ -198,6 +205,9 @@ class StopController extends Controller
             else if (sizeof($valid[2]) > 0)
                 $errors->add($valid[2]);
             foreach ($valid[1] as $model) {
+                $last_bus_stop = $route->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
+                // basicamente se pregunta que si existe un ultomo vagon y a partir de ello se asigna el orden
+                $model['orden']=isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1;
                 $route->wagons()->attach($model['id_vagon'], ['estado_parada' => $model['estado_parada'], 'orden'=>$model['orden']]);
             }
         }
@@ -211,9 +221,18 @@ class StopController extends Controller
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function saveRandom($amount) {
-        $result = $this->getRandom($amount);
-        foreach ($result as $model) {
-            $model->save();
+        Log::info('---------------------------------------------------------------------------------------------------');
+        $wagons = \App\Wagon::all();
+        $routes = \App\Route::all();
+        for ($i = 0; $i < $amount; $i++) {
+            $randomW = $wagons->random();
+            $randomR = $routes->random();
+            $stop = RouteSeed::validate($randomW, $randomR);
+            Log::info('.................');
+            if (isset($stop))
+ //               Log::info('aaaaaaaa'.$stop->id_ruta);
+                $stop['id_ruta']->wagons()->attach($stop['id_vagon'], ['estado_parada' => $stop['estado_parada'], 'orden'=>$stop['orden']]);
+   //             $stop->save();
         }
         return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }

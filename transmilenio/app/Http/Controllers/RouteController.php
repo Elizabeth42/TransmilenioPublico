@@ -147,8 +147,8 @@ class RouteController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(Route::class)->make();
-            $validator = $this->custom_validator($model->attributesToArray());
-            if (!$validator->fails())
+//            $validator = $this->custom_validator($model->attributesToArray());
+//            if (!$validator->fails())
                 $result->add($model);
         }
         return $result;
@@ -179,7 +179,9 @@ class RouteController extends Controller
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
         foreach ($result as $model) {
-            $model->save();
+            $validator = $this->custom_validator($model->attributesToArray());
+            if (!$validator->fails())
+                $model->save();
         }
         return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }

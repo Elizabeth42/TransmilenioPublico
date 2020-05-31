@@ -160,8 +160,8 @@ class PortalController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(Portal::class)->make();
-            $valid = \PortalSeed::validate($model);
-            if ($valid)
+ //           $valid = \PortalSeed::validate($model);
+//            if ($valid)
                 $result->add($model);
         }
         return $result;
@@ -197,7 +197,9 @@ class PortalController extends Controller
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
         foreach ($result as $model) {
-            $model->save();
+            $valid = \PortalSeed::validate($model);
+            if ($valid)
+                $model->save();
         }
         return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }

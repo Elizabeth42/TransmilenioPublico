@@ -70,14 +70,14 @@ class WagonController extends Controller
         // en caso de que venga una troncal estacion
         if ($trunk_station!=null){
             //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
-            if ($trunk_station->hasNumberWagon($model['numero_vagon'])){
+            if ($trunk_station->hasNumberWagon($model['numero_vagon'])>0){
                 return [false, 'la troncal_estacion ya tiene ese numero de vagon asociado'];
             }
         }
-        // en caso de que venga una troncal estacion
+        // en caso de que venga una plataforma
         if ($plataforma!=null){
-            //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
-            if ($plataforma->hasNumberWagon($model['numero_vagon'])){
+            //finalmente se requiere garantizar que esa plataforma no tenga asignada ya este numero de vagon
+            if ($plataforma->hasNumberWagon($model['numero_vagon'])>0){
                 return [false, 'la plataforma ya tiene esa numero de vagon asociado'];
             }
         }
@@ -236,8 +236,8 @@ class WagonController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(Wagon::class)->make();
-            $valid = \WagonSeed::validate($model);
-            if ($valid)
+//            $valid = \WagonSeed::validate($model);
+//            if ($valid)
                 $result->add($model);
         }
         return $result;
@@ -273,7 +273,9 @@ class WagonController extends Controller
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
         foreach ($result as $model) {
-            $model->save();
+            $valid = \WagonSeed::validate($model);
+            if ($valid)
+                $model->save();
         }
         return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
     }

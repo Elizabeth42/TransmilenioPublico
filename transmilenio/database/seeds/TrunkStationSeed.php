@@ -21,9 +21,9 @@ class TrunkStationSeed extends Seeder
 
     public static function validate($trunkStation){
         // debe validar que tanto la troncal como la estacion designadas se encuentren activas
-        if ($trunkStation->trunks()->first()->activo_troncal != 'n' && $trunkStation->stations()->first()->activo_estacion != 'n') {
+        if ($trunkStation->trunk()->first()->activo_troncal != 'n' && $trunkStation->station()->first()->activo_estacion != 'n') {
             // para validar que no se encuentren asociados ya
-            if (\App\TrunkStation:: where('ID_ESTACION', '=', $trunkStation->stations()->first()->id_estacion)->where('ID_TRONCAL', '=',$trunkStation->trunks()->first()->id_troncal)->count() == 0) {
+            if (\App\TrunkStation:: where('ID_ESTACION', '=', $trunkStation->station()->first()->id_estacion)->where('ID_TRONCAL', '=',$trunkStation->trunk()->first()->id_troncal)->count() == 0) {
                 return true;
             }
         }

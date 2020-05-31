@@ -193,8 +193,8 @@ class TrunkStationController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(TrunkStation::class)->make();
-            $valid = \TrunkStationSeed::validate($model);
-            if ($valid)
+//            $valid = \TrunkStationSeed::validate($model);
+//            if ($valid)
                 $result->add($model);
         }
         return $result;
@@ -230,9 +230,12 @@ class TrunkStationController extends Controller
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
         foreach ($result as $model) {
-            $model->save();
+            $valid = \TrunkStationSeed::validate($model);
+            if ($valid){
+                $model->save();
+            }
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
