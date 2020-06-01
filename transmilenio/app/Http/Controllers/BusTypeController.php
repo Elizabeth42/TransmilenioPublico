@@ -43,7 +43,7 @@ class BusTypeController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear el tipo de bus con la informacion del json
         $created = BusType::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -69,7 +69,7 @@ class BusTypeController extends Controller
     {
         $tipoBus = BusType::find($id);
         if (!isset($tipoBus))
-            return response('{"errors":"El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El tipo de bus no existe"}', 400)->header('Content-Type', 'application/json');
         return response($tipoBus->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -95,10 +95,10 @@ class BusTypeController extends Controller
     {
         $tipoBus = BusType::find($id);
         if (!isset($tipoBus))
-            return response('{"errors":"El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El tipo de bus no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $updated = $tipoBus->update($validator->validated());
         if ($tipoBus->wasChanged('activo_tipo_bus')){
             $tipoBus->enable($request->input('activo_tipo_bus'));
@@ -119,7 +119,7 @@ class BusTypeController extends Controller
     {
         $tipoBus = BusType::find($id);
         if (!isset($tipoBus))
-            return response('{"errors":"El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El tipo de bus no existe"}', 400)->header('Content-Type', 'application/json');
         $state = $tipoBus->activo_tipo_bus == 'a' ? 'n' : 'a';
         if ($tipoBus){
             $tipoBus->enable($state);
@@ -163,7 +163,7 @@ class BusTypeController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();

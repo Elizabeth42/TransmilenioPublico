@@ -20,7 +20,7 @@ class StationTrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
         return response($trunk->stations()->get()->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -35,10 +35,10 @@ class StationTrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $ids_to_verify = $validator->validated()['stations'];
         foreach ($ids_to_verify as $key => $id_sta) {
             if ($trunk->hasStation($id_sta))
@@ -59,10 +59,10 @@ class StationTrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $ids_to_verify = $validator->validated()['stations'];
         foreach ($ids_to_verify as $key => $id_sta) {
             if (!$trunk->hasStation($id_sta))

@@ -45,7 +45,7 @@ class StationController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear el portal con la informacion del json
         $created = Station::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -70,7 +70,7 @@ class StationController extends Controller
     {
         $station = Station::find($id);
         if (!isset($station))
-            return response('{"errors":"La estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La estacion no existe"}', 400)->header('Content-Type', 'application/json');
         return response($station->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -96,10 +96,10 @@ class StationController extends Controller
     {
         $station = Station::find($id);
         if (!isset($station))
-            return response('{"errors":"La estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La estacion no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails()) {
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         }
         $updated = $station->update($validator->validated());
         if ($station->wasChanged('activo_estacion')){
@@ -121,7 +121,7 @@ class StationController extends Controller
     {
         $station = Station::find($id);
         if (!isset($station))
-            return response('{"errors":"La estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La estacion no existe"}', 400)->header('Content-Type', 'application/json');
         $state = $station->activo_estacion == 'a' ? 'n' : 'a';
         if ($station){
             $station->enable($state);
@@ -162,7 +162,7 @@ class StationController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();

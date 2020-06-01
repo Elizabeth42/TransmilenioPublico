@@ -47,7 +47,7 @@ class TimeRouteAssignmentController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear la asignacion con la informacion del json
         $created = TimeRouteAssignment::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -79,7 +79,7 @@ class TimeRouteAssignmentController extends Controller
     {
         $asignacion = TimeRouteAssignment::find($id);
         if (!isset($asignacion))
-            return response('{"errors":"La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La asignacion no existe"}', 400)->header('Content-Type', 'application/json');
         return response($asignacion->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -105,12 +105,12 @@ class TimeRouteAssignmentController extends Controller
     {
         $asignacion = TimeRouteAssignment::find($id);
         if (!isset($asignacion))
-            return response('{"errors":"La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La asignacion no existe"}', 400)->header('Content-Type', 'application/json');
 
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $validator = $this->custom_validator($request->all());
         if ($validator->fails()) {
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         }
         //$updated = $asignacion->update($validator->validated());
         $asignacion->fill($validator->validated());
@@ -125,7 +125,7 @@ class TimeRouteAssignmentController extends Controller
                 ->whereDate('fecha_inicio_operacion', '=', $request->input('fecha_inicio_operacion'))->count();
             Log::info('el valor es: '.$exist);
             if($exist>0)
-                return response('{"errors":"la ruta, el horario, el bus y la fecha de inicio ya fueron asignadas"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"la ruta, el horario, el bus y la fecha de inicio ya fueron asignadas"}', 400)->header('Content-Type', 'application/json');
         }
         if ($asignacion->isDirty('activo_asignacion')){
             $asignacion->enable($request->input('activo_asignacion'));
@@ -149,12 +149,12 @@ class TimeRouteAssignmentController extends Controller
     {
         $asignacion = TimeRouteAssignment::find($id);
         if (!isset($asignacion))
-            return response('{"errors":"La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La asignacion no existe"}', 400)->header('Content-Type', 'application/json');
         $ruta = Route::find($asignacion->id_ruta);
         $horario = Schedule::find($asignacion->id_horario);
         $bus = Bus::find($asignacion->id_bus);
         if($ruta->activo_ruta == 'n' || $horario->activo_horario == 'n'|| $bus->activo_bus == 'n'){
-            return response('{"errors":"La ruta o el bus o el horario no se encuentra activos"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta o el bus o el horario no se encuentra activos"}', 400)->header('Content-Type', 'application/json');
         }
         $state = $asignacion->activo_asignacion == 'a' ? 'n' : 'a';
         if ($asignacion){
@@ -219,7 +219,7 @@ class TimeRouteAssignmentController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();

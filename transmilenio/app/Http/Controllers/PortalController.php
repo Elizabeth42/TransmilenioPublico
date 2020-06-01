@@ -47,7 +47,7 @@ class PortalController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear el portal con la informacion del json
         $created = Portal::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -72,7 +72,7 @@ class PortalController extends Controller
     {
         $portal = Portal::find($id);
         if (!isset($portal))
-            return response('{"errors":"El portal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El portal no existe"}', 400)->header('Content-Type', 'application/json');
         return response($portal->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -98,10 +98,10 @@ class PortalController extends Controller
     {
         $portal = Portal::find($id);
         if (!isset($portal))
-            return response('{"errors":"El portal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El portal no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
 
         $updated = $portal->update($validator->validated());
         //esto es para establecer si los hijos se activan o inactivan
@@ -124,10 +124,10 @@ class PortalController extends Controller
     {
         $portal = Portal::find($id);
         if (!isset($portal))
-            return response('{"errors":"El portal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El portal no existe"}', 400)->header('Content-Type', 'application/json');
         $troncal = Trunk::find($portal->id_troncal);
         if ($troncal->activo_troncal == 'n')
-            return response('{"errors":"La troncal se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal se encuentra inactiva"}', 400)->header('Content-Type', 'application/json');
         $state = $portal->activo_portal == 'a' ? 'n' : 'a';
         if ($portal){
             $portal->enable($state);
@@ -174,7 +174,7 @@ class PortalController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();

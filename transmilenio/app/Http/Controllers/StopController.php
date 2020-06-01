@@ -21,7 +21,7 @@ class StopController extends Controller
     {
         $route = Route::find($id);
         if (!isset($route))
-            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 400)->header('Content-Type', 'application/json');
         if (request()->header('active')) {
             $active = request()->header('active');
             return response($route->wagons()->withPivot('estado_parada', 'orden')->where('paradas.estado_parada', '=', $active)->get());
@@ -44,7 +44,7 @@ class StopController extends Controller
     {
         $valid = $this->validateModel($request->all(), $id);
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         $route = Route::find($id);
         foreach ($valid[1] as $parada) {
             $id_wagon = $parada['id_vagon'];
@@ -111,12 +111,12 @@ class StopController extends Controller
     {
         $route = Route::find($id);
         if (!isset($route))
-            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 400)->header('Content-Type', 'application/json');
         if ($route->activo_ruta == 'n')
-            return response('{"errors":"La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta se encuentra inactiva"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $paradas = $validator->validated()['wagons'];
         $new_wagons = collect();
         foreach ($paradas as $key => $wagon) {
@@ -138,18 +138,18 @@ class StopController extends Controller
     {
         $route = Route::find($idR);
         if (!isset($route))
-            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 400)->header('Content-Type', 'application/json');
         if ($route->activo_ruta == 'n')
-            return response('{"errors":"La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta se encuentra inactiva"}', 400)->header('Content-Type', 'application/json');
         if ($route->hasWagon($idW)) {
             $wagon_r = $route->wagons()->withPivot('estado_parada')->where('vagones.id_vagon', '=', $idW)->first();
             if ($wagon_r->activo_vagon == 'n')
-                return response('{"errors":"El vagon se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"El vagon se encuentra inactivo"}', 400)->header('Content-Type', 'application/json');
             $new_state = $wagon_r->pivot->estado_parada == 'a' ? 'n' : 'a';
             $route->wagons()->syncWithoutDetaching([$wagon_r->id_vagon => ['estado_parada' => $new_state]]);
             return response($route->wagons()->withPivot('estado_parada')->where('vagones.id_vagon', '=', $idW)->first()->toJson(), 200)->header('Content-Type', 'application/json');
         } else {
-            return response('{"errors":"El vagon no se encuentra asociado a esta ruta"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El vagon no se encuentra asociado a esta ruta"}', 400)->header('Content-Type', 'application/json');
         }
     }
 
@@ -192,7 +192,7 @@ class StopController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $errors = collect();
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()), true);

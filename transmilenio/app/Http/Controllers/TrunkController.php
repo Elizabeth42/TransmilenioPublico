@@ -45,7 +45,7 @@ class TrunkController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
 
         //se encargara de crear el portal con la informacion del json
         $created = Trunk::create($valid[1]);
@@ -71,7 +71,7 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
         return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -97,10 +97,10 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}', 400)->header('Content-Type', 'application/json');
         $updated = $trunk->update($validator->validated());
         if ($trunk->wasChanged('activo_troncal')){
             $trunk->enable($request->input('activo_troncal'));
@@ -121,7 +121,7 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
         $state = $trunk->activo_troncal == 'a' ? 'n' : 'a';
         if ($trunk){
             $trunk->enable($state);
@@ -179,7 +179,7 @@ class TrunkController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();

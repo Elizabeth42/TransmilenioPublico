@@ -42,7 +42,7 @@ class TravelController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear el viaje con la informacion del json
         $created = Travel::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -74,7 +74,7 @@ class TravelController extends Controller
     {
         $travel = Travel::find($id);
         if (!isset($travel))
-            return response('{"errors":"El viaje no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El viaje no existe"}', 400)->header('Content-Type', 'application/json');
         return response($travel->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -100,20 +100,20 @@ class TravelController extends Controller
     {
         $travel = Travel::find($id);
         if (!isset($travel))
-            return response('{"errors":"El viaje no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El viaje no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $travel->fill($validator->validated());
         $asignacion = TimeRouteAssignment::find($request->input('id_asignacion_ruta'));
 
         if ($travel->isDirty('id_asignacion_ruta')||$travel->isDirty('fecha_inicio_viaje')){
             $exist =Travel::where('id_asignacion_ruta','=',$request->input('id_asignacion_ruta'))->whereDate('fecha_inicio_viaje','=',$request->input('fecha_inicio_viaje'))->count();
             if($exist>0)
-                return response('{"errors":"la asignacion y fecha de inicio ya fueron asignadas"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"la asignacion y fecha de inicio ya fueron asignadas"}', 400)->header('Content-Type', 'application/json');
             $validateDate = Carbon::parse($asignacion->fecha_inicio_operacion)->gt($request->input('fecha_inicio_viaje'));
             if($validateDate)
-                return response('{"errors":"la fecha de inicio del viaje no puede ser mayor que la fecha de inicio de operacion establecida en la asignacion"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"la fecha de inicio del viaje no puede ser mayor que la fecha de inicio de operacion establecida en la asignacion"}', 400)->header('Content-Type', 'application/json');
         }
 
         if ($travel){
@@ -136,7 +136,7 @@ class TravelController extends Controller
     {
         $travel = Travel::find($id);
         if (!isset($travel))
-            return response('{"errors":"El viaje no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El viaje no existe"}', 400)->header('Content-Type', 'application/json');
         try {
             $deleted = $travel->delete();
         } catch (Exception $e) {
@@ -145,7 +145,7 @@ class TravelController extends Controller
         if ($deleted)
             return response('{ "success": "El viaje fue eliminado"}', 200)->header('Content-Type', 'application/json');
         else
-            return response('{ "errors":"El viaje no pudo ser eliminada"}', 300)->header('Content-Type', 'application/json');
+            return response('{ "errors":"El viaje no pudo ser eliminada"}', 400)->header('Content-Type', 'application/json');
     }
 
     private function custom_validator($data)
@@ -183,7 +183,7 @@ class TravelController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();

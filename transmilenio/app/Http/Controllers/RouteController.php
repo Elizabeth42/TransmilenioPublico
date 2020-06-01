@@ -42,7 +42,7 @@ class RouteController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear el portal con la informacion del json
         $created = Route::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -67,7 +67,7 @@ class RouteController extends Controller
     {
         $ruta = Route::find($id);
         if (!isset($ruta))
-            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 400)->header('Content-Type', 'application/json');
         return response($ruta->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -93,10 +93,10 @@ class RouteController extends Controller
     {
         $ruta = Route::find($id);
         if (!isset($ruta))
-            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $updated = $ruta->update($validator->validated());
         if ($ruta->wasChanged('activo_ruta')){
             $ruta->enable($request->input('activo_ruta'));
@@ -117,7 +117,7 @@ class RouteController extends Controller
     {
         $ruta = Route::find($id);
         if (!isset($ruta))
-            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 400)->header('Content-Type', 'application/json');
         $state = $ruta->activo_ruta == 'a' ? 'n' : 'a';
         if ($ruta){
             $ruta->enable($state);
@@ -161,7 +161,7 @@ class RouteController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();

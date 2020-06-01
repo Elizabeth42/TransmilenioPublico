@@ -43,7 +43,7 @@ class ScheduleController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear el horario con la informacion del json
         $created = Schedule::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -69,7 +69,7 @@ class ScheduleController extends Controller
     {
         $schedule = Schedule::find($id);
         if (!isset($schedule))
-            return response('{"errors":"El horario no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El horario no existe"}', 400)->header('Content-Type', 'application/json');
         return response($schedule->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -95,10 +95,10 @@ class ScheduleController extends Controller
     {
         $horario = Schedule::find($id);
         if (!isset($horario))
-            return response('{"errors":"El horario no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El horario no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $updated = $horario->update($validator->validated());
         if ($horario->wasChanged('activo_horario')){
             $horario->enable($request->input('activo_horario'));
@@ -118,7 +118,7 @@ class ScheduleController extends Controller
     {
         $horario = Schedule::find($id);
         if (!isset($horario))
-            return response('{"errors":"El horario no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El horario no existe"}', 400)->header('Content-Type', 'application/json');
         $state = $horario->activo_horario == 'a' ? 'n' : 'a';
         if ($horario){
             $horario->enable($state);
@@ -168,7 +168,7 @@ class ScheduleController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();

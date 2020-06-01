@@ -48,7 +48,7 @@ class PlatformController extends Controller
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear la plataforma con la informacion del json
         $created = Platform::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -75,7 +75,7 @@ class PlatformController extends Controller
     {
         $platform = Platform::find($id);
         if (!isset($platform))
-            return response('{"errors":"La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La plataforma no existe"}', 400)->header('Content-Type', 'application/json');
         return response($platform->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -101,10 +101,10 @@ class PlatformController extends Controller
     {
         $platform = Platform::find($id);
         if (!isset($platform))
-            return response('{"errors":"La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La plataforma no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
 
         $updated = $platform->update($validator->validated());
         //esto es para establecer si los hijos se activan o inactivan
@@ -127,10 +127,10 @@ class PlatformController extends Controller
     {
         $platform = Platform::find($id);
         if (!isset($platform))
-            return response('{"errors":"La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La plataforma no existe"}', 400)->header('Content-Type', 'application/json');
         $portal = Portal::find($platform->id_portal);
         if ($portal->activo_portal == 'n')
-            return response('{"errors":"El portal se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El portal se encuentra inactivo"}', 400)->header('Content-Type', 'application/json');
         $state = $platform->activo_plataforma == 'a' ? 'n' : 'a';
         if ($platform){
             $platform->enable($state);
@@ -179,7 +179,7 @@ class PlatformController extends Controller
             ]
         );
         if ($validator->fails())
-            return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();
