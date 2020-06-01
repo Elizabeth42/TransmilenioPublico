@@ -226,7 +226,7 @@ class WagonController extends Controller
             ],
             ['required'=> 'El :attribute es obligatorio',
                 'id_plataforma.exists'=>'La plataforma no existe o no esta activa',
-                'id_troncal_estacion.exists'=>'La troncal_estacoion no existe o no esta activa',
+                'id_troncal_estacion.exists'=>'La troncal_estacion no existe o no esta activa',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo',
                 'integer'=> 'El :attribute debe ser de tipo entero']
         );
