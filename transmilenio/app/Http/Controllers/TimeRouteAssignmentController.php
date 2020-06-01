@@ -47,7 +47,7 @@ class TimeRouteAssignmentController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear la asignacion con la informacion del json
         $created = TimeRouteAssignment::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -79,7 +79,7 @@ class TimeRouteAssignmentController extends Controller
     {
         $asignacion = TimeRouteAssignment::find($id);
         if (!isset($asignacion))
-            return response('{"error": "La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
         return response($asignacion->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -105,7 +105,7 @@ class TimeRouteAssignmentController extends Controller
     {
         $asignacion = TimeRouteAssignment::find($id);
         if (!isset($asignacion))
-            return response('{"error": "La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
 
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $validator = $this->custom_validator($request->all());
@@ -125,7 +125,7 @@ class TimeRouteAssignmentController extends Controller
                 ->whereDate('fecha_inicio_operacion', '=', $request->input('fecha_inicio_operacion'))->count();
             Log::info('el valor es: '.$exist);
             if($exist>0)
-                return response('{"error": "la ruta, el horario, el bus y la fecha de inicio ya fueron asignadas"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"la ruta, el horario, el bus y la fecha de inicio ya fueron asignadas"}', 300)->header('Content-Type', 'application/json');
         }
         if ($asignacion->isDirty('activo_asignacion')){
             $asignacion->enable($request->input('activo_asignacion'));
@@ -135,7 +135,7 @@ class TimeRouteAssignmentController extends Controller
             return response($asignacion->toJson(), 200)->header('Content-Type', 'application/json');
         }
         else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -149,12 +149,12 @@ class TimeRouteAssignmentController extends Controller
     {
         $asignacion = TimeRouteAssignment::find($id);
         if (!isset($asignacion))
-            return response('{"error": "La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La asignacion no existe"}', 300)->header('Content-Type', 'application/json');
         $ruta = Route::find($asignacion->id_ruta);
         $horario = Schedule::find($asignacion->id_horario);
         $bus = Bus::find($asignacion->id_bus);
         if($ruta->activo_ruta == 'n' || $horario->activo_horario == 'n'|| $bus->activo_bus == 'n'){
-            return response('{"error": "La ruta o el bus o el horario no se encuentra activos"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta o el bus o el horario no se encuentra activos"}', 300)->header('Content-Type', 'application/json');
         }
         $state = $asignacion->activo_asignacion == 'a' ? 'n' : 'a';
         if ($asignacion){
@@ -162,7 +162,7 @@ class TimeRouteAssignmentController extends Controller
             $asignacion->save();
             return response($asignacion->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -207,8 +207,6 @@ class TimeRouteAssignmentController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(TimeRouteAssignment::class)->make();
-            $valid = \TimeRouteAssignmentSeeder::validate($model);
-            if ($valid)
                 $result->add($model);
         }
         return $result;
@@ -231,7 +229,7 @@ class TimeRouteAssignmentController extends Controller
             if ($valid[0])
                 TimeRouteAssignment::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
@@ -243,10 +241,16 @@ class TimeRouteAssignmentController extends Controller
      */
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $model->save();
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
+                $model->save();
+            else
+                $errors->add($valid[1]);
+
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
     /**
      * Este metodo permite guardar el archivo json de una cantidad de elementos random creados segun el parametro que entra

@@ -47,7 +47,7 @@ class TrunkStationController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
 
         // se procede con la creacion de la troncal estacion
         $created = TrunkStation::create($valid[1]);
@@ -87,7 +87,7 @@ class TrunkStationController extends Controller
     {
         $troncalStacion = TrunkStation::find($id);
         if (!isset($troncalStacion))
-            return response('{"error": "La troncal_estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal_estacion no existe"}', 300)->header('Content-Type', 'application/json');
         return response($troncalStacion->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -113,7 +113,7 @@ class TrunkStationController extends Controller
     {
         $troncalStacion = TrunkStation::find($id);
         if (!isset($troncalStacion))
-            return response('{"error": "La troncal_estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal_estacion no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -122,7 +122,7 @@ class TrunkStationController extends Controller
 
         //se requiere garantizar que esa troncal no tenga asignada ya esa estacion pues ambas deben ser unicas
         if ($station->hasTrunk($troncal->id_troncal))
-            return response('{"error": "la estacion ya tiene esa troncal asociada"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"la estacion ya tiene esa troncal asociada"}', 300)->header('Content-Type', 'application/json');
 
         // con esto ya validado se procede a la actualizacion
         $updated = $troncalStacion->update($validator->validated());
@@ -133,7 +133,7 @@ class TrunkStationController extends Controller
         if ($updated)
             return response($troncalStacion->toJson(), 200)->header('Content-Type', 'application/json');
         else
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -146,11 +146,11 @@ class TrunkStationController extends Controller
     {
         $troncalStacion = TrunkStation::find($id);
         if (!isset($troncalStacion))
-            return response('{"error": "La troncal_estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal_estacion no existe"}', 300)->header('Content-Type', 'application/json');
         $troncal = Trunk::find($troncalStacion->id_troncal);
         $estacion = Trunk::find($troncalStacion->id_estacion);
         if($troncal->activo_troncal == 'n' || $estacion->activo_estacion == 'n'){
-            return response('{"error": "La troncal o la estacion no se encuentra activa"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal o la estacion no se encuentra activa"}', 300)->header('Content-Type', 'application/json');
         }
         $state = $troncalStacion->activo_troncal_estacion == 'a' ? 'n' : 'a';
         if ($troncalStacion){
@@ -158,7 +158,7 @@ class TrunkStationController extends Controller
             $troncalStacion->save();
             return response($troncalStacion->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -217,7 +217,7 @@ class TrunkStationController extends Controller
             if ($valid[0])
                 TrunkStation::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
@@ -229,13 +229,15 @@ class TrunkStationController extends Controller
      */
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $valid = \TrunkStationSeed::validate($model);
-            if ($valid){
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
                 $model->save();
-            }
+            else
+                $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

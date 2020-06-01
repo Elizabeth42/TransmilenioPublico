@@ -45,7 +45,7 @@ class WagonController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear el vagon con la informacion del json
         $created = Wagon::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -94,7 +94,7 @@ class WagonController extends Controller
     {
         $vagon = Wagon::find($id);
         if (!isset($vagon))
-            return response('{"error": "El vagon no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El vagon no existe"}', 300)->header('Content-Type', 'application/json');
         return response($vagon->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -120,7 +120,7 @@ class WagonController extends Controller
     {
         $vagon = Wagon::find($id);
         if (!isset($vagon))
-            return response('{"error": "El vagon no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El vagon no existe"}', 300)->header('Content-Type', 'application/json');
 
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $validator = $this->custom_validator($request->all());
@@ -142,24 +142,24 @@ class WagonController extends Controller
         //$plataforma = Platform::find($request->input('id_plataforma'));
         // permitira validar que solamente venga activo una de las foreign key
         if ($trunk_station!=null && $plataforma!=null){
-            return response('{"error": "El vagon solamente puede ser asignado a una troncal_estacion o a una plataforma pero no a ambas"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El vagon solamente puede ser asignado a una troncal_estacion o a una plataforma pero no a ambas"}', 300)->header('Content-Type', 'application/json');
         }
         // permitira validar que almenos una de las foreign key venga activa
         if ($trunk_station==null && $plataforma ==null){
-            return response('{"error": "El vagon solamente necesita una troncal_estacion o una plataforma para ser asignado"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El vagon solamente necesita una troncal_estacion o una plataforma para ser asignado"}', 300)->header('Content-Type', 'application/json');
         }
         // en caso de que venga una troncal estacion
         if ($trunk_station!=null && $vagon->isDirty('numero_vagon')){
             //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
             if ($trunk_station->hasNumberWagon($request->input('numero_vagon'))){
-                return response('{"error": "la troncal_estacion ya tiene ese numero de vagon asociado"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"la troncal_estacion ya tiene ese numero de vagon asociado"}', 300)->header('Content-Type', 'application/json');
             }
         }
         // en caso de que venga una troncal estacion
         if ($plataforma!=null && $vagon->isDirty('numero_vagon')){
             //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
             if ($plataforma->hasNumberWagon($request->input('numero_vagon'))){
-                return response('{"error": "la plataforma ya tiene esa numero de vagon asociado"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"la plataforma ya tiene esa numero de vagon asociado"}', 300)->header('Content-Type', 'application/json');
             }
         }
 
@@ -171,7 +171,7 @@ class WagonController extends Controller
             $vagon->save();
             return response($vagon->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
 
     }
@@ -186,15 +186,15 @@ class WagonController extends Controller
     {
         $vagon = Wagon::find($id);
         if (!isset($vagon))
-            return response('{"error": "El vagon no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El vagon no existe"}', 300)->header('Content-Type', 'application/json');
         $troncalEstacion = TrunkStation::find($vagon->id_troncal_estacion);
         $plataforma = Platform::find($vagon->id_plataforma);
         if($troncalEstacion != null){
             if ($troncalEstacion->activo_troncal_estacion == 'n')
-                return response('{"error": "La troncal_estacion se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"La troncal_estacion se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
         }else{
             if ($plataforma->activo_plataforma == 'n')
-                return response('{"error": "La plataforma se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"La plataforma se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
         }
         $state = $vagon->activo_vagon == 'a' ? 'n' : 'a';
         if ($vagon){
@@ -202,7 +202,7 @@ class WagonController extends Controller
             $vagon->save();
             return response($vagon->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -260,7 +260,7 @@ class WagonController extends Controller
             if ($valid[0])
                 Wagon::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
@@ -272,12 +272,15 @@ class WagonController extends Controller
      */
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $valid = \WagonSeed::validate($model);
-            if ($valid)
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
                 $model->save();
+            else
+                $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

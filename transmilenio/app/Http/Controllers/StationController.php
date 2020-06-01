@@ -45,7 +45,7 @@ class StationController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear el portal con la informacion del json
         $created = Station::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -70,7 +70,7 @@ class StationController extends Controller
     {
         $station = Station::find($id);
         if (!isset($station))
-            return response('{"error": "La estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La estacion no existe"}', 300)->header('Content-Type', 'application/json');
         return response($station->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -96,7 +96,7 @@ class StationController extends Controller
     {
         $station = Station::find($id);
         if (!isset($station))
-            return response('{"error": "La estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La estacion no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails()) {
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -108,7 +108,7 @@ class StationController extends Controller
         if ($updated)
             return response($station->toJson(), 200)->header('Content-Type', 'application/json');
         else
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -121,14 +121,14 @@ class StationController extends Controller
     {
         $station = Station::find($id);
         if (!isset($station))
-            return response('{"error": "La estacion no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La estacion no existe"}', 300)->header('Content-Type', 'application/json');
         $state = $station->activo_estacion == 'a' ? 'n' : 'a';
         if ($station){
             $station->enable($state);
             $station->save();
             return response($station->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -172,17 +172,22 @@ class StationController extends Controller
             if ($valid[0])
                 Station::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations Prosseced BusTypes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $model->save();
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
+                $model->save();
+            else
+                $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

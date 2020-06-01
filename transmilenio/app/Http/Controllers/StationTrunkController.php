@@ -20,7 +20,7 @@ class StationTrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
         return response($trunk->stations()->get()->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -35,7 +35,7 @@ class StationTrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -59,7 +59,7 @@ class StationTrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');

@@ -45,7 +45,7 @@ class BusController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear el vagon con la informacion del json
         $created = Bus::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -73,7 +73,7 @@ class BusController extends Controller
     {
         $bus = Bus::find($id);
         if (!isset($bus))
-            return response('{"error": "El bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El bus no existe"}', 300)->header('Content-Type', 'application/json');
         return response($bus->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -99,7 +99,7 @@ class BusController extends Controller
     {
         $bus = Bus::find($id);
         if (!isset($bus))
-            return response('{"error": "El bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El bus no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -108,7 +108,7 @@ class BusController extends Controller
         // si fue cambiada la placa del bus valide si la misma ya se encuentra registrada
         if ($bus->isDirty('placabus')){ // el isDirty permite analizar si el atributo cambio desde la ultima carga del modelo
             if($bus->where('placabus','=',$request->input('placabus'))->count()>0){
-                return response('{"error": "La placa del bus debe ser unica"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"La placa del bus debe ser unica"}', 300)->header('Content-Type', 'application/json');
             }
         }
         //esto es para establecer si los hijos se activan o inactivan
@@ -119,7 +119,7 @@ class BusController extends Controller
             $bus->save();
             return response($bus->toJson(), 200)->header('Content-Type', 'application/json');
         } else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -133,17 +133,17 @@ class BusController extends Controller
     {
         $bus = Bus::find($id);
         if (!isset($bus))
-            return response('{"error": "El bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El bus no existe"}', 300)->header('Content-Type', 'application/json');
         $type = BusType::find($bus->id_tipo_bus);
         if ($type->activo_tipo_bus == 'n')
-            return response('{"error": "El tipo bus se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El tipo bus se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
         $state = $bus->activo_bus == 'a' ? 'n' : 'a';
         if ($bus){
             $bus->enable($state);
             $bus->save();
             return response($bus->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -169,8 +169,8 @@ class BusController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(Bus::class)->make();
-            $valid = \BusSeed::validate($model);
-            if ($valid)
+//            $valid = \BusSeed::validate($model);
+//            if ($valid)
                 $result->add($model);
         }
         return $result;
@@ -193,7 +193,7 @@ class BusController extends Controller
             if ($valid[0])
                 Bus::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
@@ -205,10 +205,16 @@ class BusController extends Controller
      */
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $model->save();
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
+                $model->save();
+            else
+                $errors->add($valid[1]);
+
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

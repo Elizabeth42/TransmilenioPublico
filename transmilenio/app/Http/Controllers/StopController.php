@@ -21,7 +21,7 @@ class StopController extends Controller
     {
         $route = Route::find($id);
         if (!isset($route))
-            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
         if (request()->header('active')) {
             $active = request()->header('active');
             return response($route->wagons()->withPivot('estado_parada', 'orden')->where('paradas.estado_parada', '=', $active)->get());
@@ -44,27 +44,32 @@ class StopController extends Controller
     {
         $valid = $this->validateModel($request->all(), $id);
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         $route = Route::find($id);
         foreach ($valid[1] as $parada) {
             $id_wagon = $parada['id_vagon'];
-            // El ultimo vagon asignado a esa ruta
-            $last_bus_stop = $route->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
             $parada['id_vagon']=$id_wagon;
-            // basicamente se pregunta que si existe un ultomo vagon y a partir de ello se asigna el orden
-            $parada['orden']=isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1;
+            $parada['orden'] = $this->assign_order($route);
             if(!$valid[2]->has($id_wagon))
                 $route->wagons()->attach($id_wagon,['estado_parada' => $parada['estado_parada'], 'orden' => $parada['orden']]);
         }
         return response('{"success": "Agregadas correctamente los vagones a la ruta", "errors": '.$valid[2]->toJson().'}', 200)->header('Content-Type', 'application/json');
     }
 
+    private function assign_order($route)
+    {
+        // El ultimo vagon asignado a esa ruta
+        $last_bus_stop = $route->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
+        // basicamente se pregunta que si existe un ultomo vagon y a partir de ello se asigna el orden
+        return isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1;
+    }
+
     private function validateModel($model, $id){
         $route = Route::find($id);
         if (!isset($route))
-            return [false, 'La ruta no existe'];
+            return [false, 'La ruta '.$id.' no existe'];
         if ($route->activo_ruta == 'n')
-            return [false, 'La ruta se encuentra inactiva'];
+            return [false, 'La ruta '.$id.' se encuentra inactiva'];
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $validator = $this->custom_validator($model);
         if ($validator->fails()) {
@@ -77,23 +82,19 @@ class StopController extends Controller
             $id_wagon = $parada['id_vagon'];
             $wagon = Wagon::find($id_wagon);
             if(!isset($wagon)){
-                $errors->add([$id_wagon => 'El vagon '.$id_wagon.' no existe']);
+                $errors->add('El vagon '.$id_wagon.' no existe');
                 continue;
             }
             if($wagon->activo_vagon != 'a'){
-                $errors->add([$id_wagon => 'El vagon '.$id_wagon.' no se encuentra activo']);
+                $errors->add('El vagon '.$id_wagon.' no se encuentra activo');
                 continue;
             }
             // permitira establecer si la ruta ya tiene este vagon asociado y si el vagon se encuentra activo
             if ($route->hasWagon($id_wagon)){
-                $errors->add([$id_wagon => 'El vagon ya se encuentra asignado a esta ruta']);
+                $errors->add('El vagon ya se encuentra asignado a esta ruta');
                 continue;
             }
-            // El ultimo vagon asignado a esa ruta
-            $last_bus_stop = $route->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
             $parada['id_vagon']=$id_wagon;
-            // basicamente se pregunta que si existe un ultomo vagon y a partir de ello se asigna el orden
-            $parada['orden']=isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1;
             $stops->add($parada);
         }
         return [true, $stops, $errors];
@@ -110,9 +111,9 @@ class StopController extends Controller
     {
         $route = Route::find($id);
         if (!isset($route))
-            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
         if ($route->activo_ruta == 'n')
-            return response('{"error": "La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -137,18 +138,18 @@ class StopController extends Controller
     {
         $route = Route::find($idR);
         if (!isset($route))
-            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
         if ($route->activo_ruta == 'n')
-            return response('{"error": "La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
         if ($route->hasWagon($idW)) {
             $wagon_r = $route->wagons()->withPivot('estado_parada')->where('vagones.id_vagon', '=', $idW)->first();
             if ($wagon_r->activo_vagon == 'n')
-                return response('{"error": "El vagon se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
+                return response('{"errors":"El vagon se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
             $new_state = $wagon_r->pivot->estado_parada == 'a' ? 'n' : 'a';
             $route->wagons()->syncWithoutDetaching([$wagon_r->id_vagon => ['estado_parada' => $new_state]]);
             return response($route->wagons()->withPivot('estado_parada')->where('vagones.id_vagon', '=', $idW)->first()->toJson(), 200)->header('Content-Type', 'application/json');
         } else {
-            return response('{"error": "El vagon no se encuentra asociado a esta ruta"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El vagon no se encuentra asociado a esta ruta"}', 300)->header('Content-Type', 'application/json');
         }
     }
 
@@ -201,10 +202,13 @@ class StopController extends Controller
             $valid = $this->validateModel(['wagons'=>[$stop]], $stop['id_ruta']);
             if(!$valid[0])
                 $errors->add($valid[1]);
-            else if (sizeof($valid[2]) > 0)
-                $errors->add($valid[2]);
-            foreach ($valid[1] as $model) {
-                $route->wagons()->attach($model['id_vagon'], ['estado_parada' => $model['estado_parada'], 'orden'=>$model['orden']]);
+            else {
+                if (sizeof($valid[2]) == 1)
+                    $errors->add($valid[2][0]);
+                foreach ($valid[1] as $model) {
+                    $model['orden'] = $this->assign_order($route);
+                    $route->wagons()->attach($model['id_vagon'], ['estado_parada' => $model['estado_parada'], 'orden'=>$model['orden']]);
+                }
             }
         }
         return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
@@ -218,16 +222,24 @@ class StopController extends Controller
     public function saveRandom($amount) {
         $wagons = \App\Wagon::all();
         $routes = \App\Route::all();
+        $errors = collect();
         for ($i = 0; $i < $amount; $i++) {
             $randomW = $wagons->random();
             $randomR = $routes->random();
-            $stop = RouteSeed::validate($randomW, $randomR);
-            if (isset($stop)){
-                $ruta = Route::find($stop['id_ruta']);
-                $ruta->wagons()->attach($stop['id_vagon'], ['estado_parada' => $stop['estado_parada'], 'orden'=>$stop['orden']]);
+            $stop = \RouteSeed::addStop($randomW, $randomR);
+            $valid = $this->validateModel(['wagons'=>[$stop]], $randomR->getKey());
+            if(!$valid[0])
+                $errors->add($valid[1]);
+            else {
+                if (sizeof($valid[2]) == 1)
+                    $errors->add($valid[2][0]);
+                foreach ($valid[1] as $model) {
+                    $model['orden'] = $this->assign_order($randomR);
+                    $randomR->wagons()->attach($model['id_vagon'], ['estado_parada' => $model['estado_parada'], 'orden'=>$model['orden']]);
+                }
             }
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
 

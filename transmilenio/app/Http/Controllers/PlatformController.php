@@ -48,7 +48,7 @@ class PlatformController extends Controller
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear la plataforma con la informacion del json
         $created = Platform::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -75,7 +75,7 @@ class PlatformController extends Controller
     {
         $platform = Platform::find($id);
         if (!isset($platform))
-            return response('{"error": "La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
         return response($platform->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -101,7 +101,7 @@ class PlatformController extends Controller
     {
         $platform = Platform::find($id);
         if (!isset($platform))
-            return response('{"error": "La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -114,7 +114,7 @@ class PlatformController extends Controller
         if ($updated)
             return response($platform->toJson(), 200)->header('Content-Type', 'application/json');
         else
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -127,17 +127,17 @@ class PlatformController extends Controller
     {
         $platform = Platform::find($id);
         if (!isset($platform))
-            return response('{"error": "La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La plataforma no existe"}', 300)->header('Content-Type', 'application/json');
         $portal = Portal::find($platform->id_portal);
         if ($portal->activo_portal == 'n')
-            return response('{"error": "El portal se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El portal se encuentra inactivo"}', 300)->header('Content-Type', 'application/json');
         $state = $platform->activo_plataforma == 'a' ? 'n' : 'a';
         if ($platform){
             $platform->enable($state);
             $platform->save();
             return response($platform->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -189,7 +189,7 @@ class PlatformController extends Controller
             if ($valid[0])
                 Platform::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations Platforms generate!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
@@ -201,12 +201,15 @@ class PlatformController extends Controller
      */
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $valid = \PlatformSeed::validate($model);
-            if ($valid)
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
                 $model->save();
+            else
+                $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

@@ -42,7 +42,7 @@ class RouteController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear el portal con la informacion del json
         $created = Route::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -67,7 +67,7 @@ class RouteController extends Controller
     {
         $ruta = Route::find($id);
         if (!isset($ruta))
-            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
         return response($ruta->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -93,7 +93,7 @@ class RouteController extends Controller
     {
         $ruta = Route::find($id);
         if (!isset($ruta))
-            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -104,7 +104,7 @@ class RouteController extends Controller
         if ($updated)
             return response($ruta->toJson(), 200)->header('Content-Type', 'application/json');
         else
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -117,14 +117,14 @@ class RouteController extends Controller
     {
         $ruta = Route::find($id);
         if (!isset($ruta))
-            return response('{"error": "La ruta no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}', 300)->header('Content-Type', 'application/json');
         $state = $ruta->activo_ruta == 'a' ? 'n' : 'a';
         if ($ruta){
             $ruta->enable($state);
             $ruta->save();
             return response($ruta->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -171,19 +171,22 @@ class RouteController extends Controller
             if ($valid[0])
                 Route::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations Prosseced Routes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $validator = $this->custom_validator($model->attributesToArray());
-            if (!$validator->fails())
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
                 $model->save();
+            else
+                $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

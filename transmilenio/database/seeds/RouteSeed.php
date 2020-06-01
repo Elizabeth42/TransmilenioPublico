@@ -29,8 +29,7 @@ class RouteSeed extends Seeder
         //permitira validar que el vagon y la ruta esten activas, ademass que la ruta no tenga ya asignado ese vagon
         if ($randomW->activo_vagon=='a' && $randomR->activo_ruta == 'a'&& !$randomR->hasWagon($randomW->id_vagon)) {
             // si ya hay vagones asociados a esa ruta verifique cual es el ultimo asignado
-            $stop = self::addStop($randomW,$randomR);
-            return $stop;
+            return self::addStop($randomW,$randomR);
         }
         return null;
     }
@@ -38,8 +37,6 @@ class RouteSeed extends Seeder
     public static function addStop($randomW, $randomR){
         if ($randomR->wagons()->count() > 0)
             $last_bus_stop = $randomR->wagons()->withPivot('orden')->orderBy('orden', 'DESC')->first();
-        Log::info('el valor de vagon: '.$randomW->id_vagon);
-        Log::info('el valor de ruta: '. $randomR->id_ruta);
         return [
             'id_vagon' => $randomW->id_vagon,
             'id_ruta' => $randomR->id_ruta,

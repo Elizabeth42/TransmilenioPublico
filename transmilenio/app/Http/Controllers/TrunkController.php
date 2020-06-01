@@ -45,7 +45,7 @@ class TrunkController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
 
         //se encargara de crear el portal con la informacion del json
         $created = Trunk::create($valid[1]);
@@ -71,7 +71,7 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
         return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -97,7 +97,7 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -108,7 +108,7 @@ class TrunkController extends Controller
         if ($updated)
             return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
         else
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -121,14 +121,14 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"error": "La troncal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}', 300)->header('Content-Type', 'application/json');
         $state = $trunk->activo_troncal == 'a' ? 'n' : 'a';
         if ($trunk){
             $trunk->enable($state);
             $trunk->save();
             return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -189,7 +189,7 @@ class TrunkController extends Controller
             if ($valid[0])
                 Trunk::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations Prosseced BusTypes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
@@ -201,10 +201,15 @@ class TrunkController extends Controller
      */
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $model->save();
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
+                $model->save();
+            else
+                $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     public function saveFactoryJson($amount){

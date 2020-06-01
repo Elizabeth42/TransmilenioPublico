@@ -43,7 +43,7 @@ class BusTypeController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear el tipo de bus con la informacion del json
         $created = BusType::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -69,7 +69,7 @@ class BusTypeController extends Controller
     {
         $tipoBus = BusType::find($id);
         if (!isset($tipoBus))
-            return response('{"error": "El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
         return response($tipoBus->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -95,7 +95,7 @@ class BusTypeController extends Controller
     {
         $tipoBus = BusType::find($id);
         if (!isset($tipoBus))
-            return response('{"error": "El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -106,7 +106,7 @@ class BusTypeController extends Controller
         if ($updated)
             return response($tipoBus->toJson(), 200)->header('Content-Type', 'application/json');
         else
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -119,14 +119,14 @@ class BusTypeController extends Controller
     {
         $tipoBus = BusType::find($id);
         if (!isset($tipoBus))
-            return response('{"error": "El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El tipo de bus no existe"}', 300)->header('Content-Type', 'application/json');
         $state = $tipoBus->activo_tipo_bus == 'a' ? 'n' : 'a';
         if ($tipoBus){
             $tipoBus->enable($state);
             $tipoBus->save();
             return response($tipoBus->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -149,8 +149,8 @@ class BusTypeController extends Controller
         $result = collect();
         for ($i = 0; $i < $amount ; $i++) {
             $model = factory(BusType::class)->make();
-            $validator = $this->custom_validator($model->attributesToArray());
-            if (!$validator->fails())
+//            $validator = $this->custom_validator($model->attributesToArray());
+//            if (!$validator->fails())
                 $result->add($model);
         }
         return $result;
@@ -173,7 +173,7 @@ class BusTypeController extends Controller
             if ($valid[0])
                 BusType::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations Prosseced BusTypes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
@@ -185,10 +185,15 @@ class BusTypeController extends Controller
      */
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $model->save();
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
+                $model->save();
+            else
+                $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

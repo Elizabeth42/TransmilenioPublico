@@ -47,7 +47,7 @@ class PortalController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"error": "'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}', 300)->header('Content-Type', 'application/json');
         //se encargara de crear el portal con la informacion del json
         $created = Portal::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -72,7 +72,7 @@ class PortalController extends Controller
     {
         $portal = Portal::find($id);
         if (!isset($portal))
-            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El portal no existe"}', 300)->header('Content-Type', 'application/json');
         return response($portal->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -98,7 +98,7 @@ class PortalController extends Controller
     {
         $portal = Portal::find($id);
         if (!isset($portal))
-            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El portal no existe"}', 300)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response($validator->errors()->toJson(), 300)->header('Content-Type', 'application/json');
@@ -111,7 +111,7 @@ class PortalController extends Controller
         if ($updated)
             return response($portal->toJson(), 200)->header('Content-Type', 'application/json');
         else
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -124,17 +124,17 @@ class PortalController extends Controller
     {
         $portal = Portal::find($id);
         if (!isset($portal))
-            return response('{"error": "El portal no existe"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"El portal no existe"}', 300)->header('Content-Type', 'application/json');
         $troncal = Trunk::find($portal->id_troncal);
         if ($troncal->activo_troncal == 'n')
-            return response('{"error": "La troncal se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal se encuentra inactiva"}', 300)->header('Content-Type', 'application/json');
         $state = $portal->activo_portal == 'a' ? 'n' : 'a';
         if ($portal){
             $portal->enable($state);
             $portal->save();
             return response($portal->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"error": "unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -184,7 +184,7 @@ class PortalController extends Controller
             if ($valid[0])
                 Portal::create($model);
             else
-                $errors->add(['error' => $valid[1]]);
+                $errors->add($valid[1]);
         }
         return response('{"message": "Congratulations Prosseced Portals!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
@@ -196,14 +196,16 @@ class PortalController extends Controller
      */
     public function saveRandom($amount) {
         $result = $this->getRandom($amount);
+        $errors = collect();
         foreach ($result as $model) {
-            $valid = \PortalSeed::validate($model);
-            if ($valid)
+            $valid = $this->validateModel($model->toArray());
+            if ($valid[0])
                 $model->save();
+            else
+                $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady"}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
-
     /**
      * Este metodo permite guardar el archivo json de una cantidad de elementos random creados segun el parametro que entra
      * @param $amount
