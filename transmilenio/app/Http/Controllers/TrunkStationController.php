@@ -174,7 +174,7 @@ class TrunkStationController extends Controller
         if (!isset($troncalStacion))
             return response('{"errors":"La troncal_estacion no existe"}', 400)->header('Content-Type', 'application/json');
         $troncal = Trunk::find($troncalStacion->id_troncal);
-        $estacion = Trunk::find($troncalStacion->id_estacion);
+        $estacion = Station::find($troncalStacion->id_estacion);
         if($troncal->activo_troncal == 'n' || $estacion->activo_estacion == 'n'){
             return response('{"errors":"La troncal o la estacion no se encuentra activa"}', 400)->header('Content-Type', 'application/json');
         }
