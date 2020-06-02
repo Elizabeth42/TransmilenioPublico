@@ -6,6 +6,7 @@ use App\Platform;
 use App\TrunkStation;
 use App\Wagon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -69,6 +70,12 @@ class WagonController extends Controller
         }
         // en caso de que venga una troncal estacion
         if ($trunk_station!=null){
+            if(!isset($trunk_station)){
+                return [false, 'la troncal_estacion no existe'];
+            }
+            if ($trunk_station->activo_troncal_estacion=='n'){
+                return [false, 'la troncal_estacion se encuentra inactiva'];
+            }
             //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
             if ($trunk_station->hasNumberWagon($model['numero_vagon'])>0){
                 return [false, 'la troncal_estacion ya tiene ese numero de vagon asociado'];
@@ -76,6 +83,12 @@ class WagonController extends Controller
         }
         // en caso de que venga una plataforma
         if ($plataforma!=null){
+            if(!isset($plataforma)){
+                return [false, 'la plataforma no existe'];
+            }
+            if ($plataforma->activo_plataforma=='n'){
+                return [false, 'la plataforma se encuentra inactiva'];
+            }
             //finalmente se requiere garantizar que esa plataforma no tenga asignada ya este numero de vagon
             if ($plataforma->hasNumberWagon($model['numero_vagon'])>0){
                 return [false, 'la plataforma ya tiene esa numero de vagon asociado'];
@@ -118,6 +131,7 @@ class WagonController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $vagon = Wagon::find($id);
         if (!isset($vagon))
             return response('{"errors":"El vagon no existe"}', 400)->header('Content-Type', 'application/json');
@@ -127,39 +141,58 @@ class WagonController extends Controller
         if ($validator->fails()) {
             return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         }
-
         $vagon->fill($validator->validated());
-
-        //es necesario saber si se esta modificando de una plataforma a troncal_Estacion o viceversa
-        if($vagon->isDirty('id_troncal_estacion'))
-            $vagon->id_plataforma = null;
-        elseif ($vagon->isDirty('id_plataforma'))
-            $vagon->id_troncal_estacion=null;
-        //asignacion de troncal estacion y de plataforma
         $trunk_station = TrunkStation::find($vagon->id_troncal_estacion);
         $plataforma = Platform::find($vagon->id_plataforma);
 
-        //$plataforma = Platform::find($request->input('id_plataforma'));
+        if($vagon->isDirty('id_troncal_estacion')&&$vagon->id_troncal_estacion!=null){
+            if(!isset($trunk_station)){
+                return response('{"errors":"la troncal_estacion no existe"}', 400)->header('Content-Type', 'application/json');
+            }
+            if($trunk_station->activo_troncal_estacion == 'n'){
+                return response('{"errors":"la troncal_estacion se encuentra inactiva"}', 400)->header('Content-Type', 'application/json');
+            }
+
+        }
+        if ($vagon->isDirty('id_plataforma')&&$vagon->id_plataforma !=null){
+            if(!isset($plataforma)){
+                return response('{"errors":"la plataforma no existe"}', 400)->header('Content-Type', 'application/json');
+            }
+            if($plataforma->activo_plataforma == 'n'){
+                return response('{"errors":"la plataforma se encuentra inactiva"}', 400)->header('Content-Type', 'application/json');
+            }
+        }
+        // si viene nulo desde el request no deberia ser tenido en cuenta el valor anterior
+        if($request->input('id_plataforma')==null){
+            $vagon->id_plataforma=null;
+        }
+        if($request->input('id_troncal_estacion')==null){
+            $vagon->id_troncal_estacion=null;
+        }
         // permitira validar que solamente venga activo una de las foreign key
-        if ($trunk_station!=null && $plataforma!=null){
+        if ($vagon->id_troncal_estacion!=null &&  $vagon->id_plataforma!=null){
             return response('{"errors":"El vagon solamente puede ser asignado a una troncal_estacion o a una plataforma pero no a ambas"}', 400)->header('Content-Type', 'application/json');
         }
         // permitira validar que almenos una de las foreign key venga activa
-        if ($trunk_station==null && $plataforma ==null){
+        if ($vagon->id_troncal_estacion==null &&  $vagon->id_plataforma==null){
             return response('{"errors":"El vagon solamente necesita una troncal_estacion o una plataforma para ser asignado"}', 400)->header('Content-Type', 'application/json');
         }
         // en caso de que venga una troncal estacion
-        if ($trunk_station!=null && $vagon->isDirty('numero_vagon')){
-            //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
-            if ($trunk_station->hasNumberWagon($request->input('numero_vagon'))){
-                return response('{"errors":"la troncal_estacion ya tiene ese numero de vagon asociado"}', 400)->header('Content-Type', 'application/json');
+        if ($vagon->id_troncal_estacion!=null){
+            if ($vagon->isDirty('numero_vagon')){
+                //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
+                if ($trunk_station->hasNumberWagon($request->input('numero_vagon'))){
+                    return response('{"errors":"la troncal_estacion ya tiene ese numero de vagon asociado"}', 400)->header('Content-Type', 'application/json');
+                }
             }
         }
         // en caso de que venga una troncal estacion
-        if ($plataforma!=null && $vagon->isDirty('numero_vagon')){
-            //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
-            if ($plataforma->hasNumberWagon($request->input('numero_vagon'))){
-                return response('{"errors":"la plataforma ya tiene esa numero de vagon asociado"}', 400)->header('Content-Type', 'application/json');
+        if ( $vagon->id_plataforma!=null){
+            if ($vagon->isDirty('numero_vagon')){
+                //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
+                if ($plataforma->hasNumberWagon($request->input('numero_vagon'))){
+                    return response('{"errors":"la plataforma ya tiene esa numero de vagon asociado"}', 400)->header('Content-Type', 'application/json');
+                }
             }
         }
 
@@ -212,21 +245,23 @@ class WagonController extends Controller
             [
                 'numero_vagon'=>'required|integer',
                 'activo_vagon' => 'required|in:a,n',
-                'id_plataforma'=>[
-                    Rule::exists('plataformas', '')->where(function ($query) {
-                        $query->where('activo_plataforma', 'a');
-                    })
-                ],
-                'id_troncal_estacion'=>[
-                    Rule::exists('troncal_estacion', '')->where(function ($query) {
-                        $query->where('activo_troncal_estacion', 'a');
-                    })
-                ],
+                'id_plataforma'=>'integer',
+                'id_troncal_estacion'=>'integer'
+//                'id_plataforma'=>[
+//                    Rule::exists('plataformas', '')->where(function ($query) {
+//                        $query->where('activo_plataforma', 'a');
+//                    })
+//                ],
+//                'id_troncal_estacion'=>[
+//                    Rule::exists('troncal_estacion', '')->where(function ($query) {
+//                        $query->where('activo_troncal_estacion', 'a');
+//                    })
+//                ],
 
             ],
             ['required'=> 'El :attribute es obligatorio',
-                'id_plataforma.exists'=>'La plataforma no existe o no esta activa',
-                'id_troncal_estacion.exists'=>'La troncal_estacion no existe o no esta activa',
+//                'id_plataforma.exists'=>'La plataforma no existe o no esta activa',
+//                'id_troncal_estacion.exists'=>'La troncal_estacion no existe o no esta activa',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo',
                 'integer'=> 'El :attribute debe ser de tipo entero']
         );

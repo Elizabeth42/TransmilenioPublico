@@ -13,10 +13,6 @@ class Trunk extends Model
     public $timestamps = false;
     protected $fillable = ['nombre_troncal','letra_troncal','color_troncal','activo_troncal'];
 
-//    public function stations(){
-
-//        return $this->belongsToMany('App\Station', 'troncal_estacion', 'id_troncal', 'id_estacion');
-//    }
     public function trunk_stations(){
         return $this->hasMany('App\TrunkStation', 'id_troncal', 'id_troncal');
     }
@@ -27,7 +23,6 @@ class Trunk extends Model
 
     public function hasStation(int $station)
     {
-        //return $this->stations()->whereRaw('"TRONCAL_ESTACION"."ID_ESTACION"='.$station)->count() > 0;
         return $this->trunk_stations()->whereRaw('"TRONCAL_ESTACION"."ID_ESTACION"='.$station)->count() > 0;
     }
 

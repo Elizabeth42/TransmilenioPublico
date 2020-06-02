@@ -116,13 +116,13 @@ class TrunkStationController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $troncalStacion = TrunkStation::find($id);
         if (!isset($troncalStacion))
             return response('{"errors":"La troncal_estacion no existe"}', 400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
-
         $troncalStacion->fill($validator->validated());
         $station = Station::find($request->input('id_estacion'));
         $troncal = Trunk::find($request->input('id_troncal'));
@@ -130,7 +130,6 @@ class TrunkStationController extends Controller
         if(!isset($troncal)|| !isset($station)){
             return response('{"errors":"La troncal o la estacion no existe"}', 400)->header('Content-Type', 'application/json');
         }
-
         //es necesario saber si se esta modificando de una troncal
         if($troncalStacion->isDirty('id_troncal')){
             if($troncal->activo_troncal == 'n'){
