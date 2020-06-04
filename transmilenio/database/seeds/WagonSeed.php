@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class WagonSeed extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
         factory(App\Wagon::class, 10)->make()->each(function($wagon) {

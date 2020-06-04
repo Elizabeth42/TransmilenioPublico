@@ -23,7 +23,8 @@ class TrunkStationSeed extends Seeder
         // debe validar que tanto la troncal como la estacion designadas se encuentren activas
         if ($trunkStation->trunk()->first()->activo_troncal != 'n' && $trunkStation->station()->first()->activo_estacion != 'n') {
             // para validar que no se encuentren asociados ya
-            if (\App\TrunkStation:: where('ID_ESTACION', '=', $trunkStation->station()->first()->id_estacion)->where('ID_TRONCAL', '=',$trunkStation->trunk()->first()->id_troncal)->count() == 0) {
+            if (\App\TrunkStation:: where('ID_ESTACION', '=', $trunkStation->station()->first()->id_estacion)->
+                where('ID_TRONCAL', '=',$trunkStation->trunk()->first()->id_troncal)->count() == 0) {
                 return true;
             }
         }

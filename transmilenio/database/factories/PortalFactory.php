@@ -14,4 +14,3 @@ $factory->define(Portal::class, function (Faker $faker) {
     ];
 
 });
-//oli jajajaj

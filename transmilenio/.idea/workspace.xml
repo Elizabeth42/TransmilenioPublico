@@ -13,6 +13,20 @@
       <phar pharPath="$PROJECT_DIR$/composer.phar" interpreterId="fe95cb38-aa26-438b-b1b6-10aeb475b48d" />
     </execution>
   </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
@@ -250,7 +264,9 @@
       <workItem from="1591041575443" duration="8321000" />
       <workItem from="1591059141469" duration="14022000" />
       <workItem from="1591080704241" duration="170000" />
-      <workItem from="1591081404000" duration="555000" />
+      <workItem from="1591081404000" duration="1186000" />
+      <workItem from="1591128574142" duration="12215000" />
+      <workItem from="1591194303281" duration="15985000" />
     </task>
     <servers />
   </component>
@@ -307,26 +323,26 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1589833259376" />
-    <state width="1493" height="148" key="GridCell.Tab.0.bottom" timestamp="1591080873221">
+    <state width="1493" height="148" key="GridCell.Tab.0.bottom" timestamp="1591198580424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="148" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1591080873221" />
-    <state width="1493" height="148" key="GridCell.Tab.0.center" timestamp="1591080873220">
+    <state width="1493" height="148" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1591198580424" />
+    <state width="1493" height="148" key="GridCell.Tab.0.center" timestamp="1591198580424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="148" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1591080873220" />
-    <state width="1493" height="148" key="GridCell.Tab.0.left" timestamp="1591080873220">
+    <state width="1493" height="148" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1591198580424" />
+    <state width="1493" height="148" key="GridCell.Tab.0.left" timestamp="1591198580423">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="148" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1591080873220" />
-    <state width="1493" height="148" key="GridCell.Tab.0.right" timestamp="1591080873220">
+    <state width="1493" height="148" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1591198580423" />
+    <state width="1493" height="148" key="GridCell.Tab.0.right" timestamp="1591198580424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="148" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1591080873220" />
-    <state x="277" y="55" key="SettingsEditor" timestamp="1590970239788">
+    <state width="1493" height="148" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1591198580424" />
+    <state x="277" y="55" key="SettingsEditor" timestamp="1591236917730">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1590970239788" />
+    <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1591236917730" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1588884861073">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -339,10 +355,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="187" y="83" width="1204" height="512" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1587684515859" />
-    <state x="518" y="3" width="877" height="804" key="find.popup" timestamp="1591077489636">
+    <state x="518" y="3" width="877" height="804" key="find.popup" timestamp="1591141961867">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="518" y="3" width="877" height="804" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1591077489636" />
+    <state x="518" y="3" width="877" height="804" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1591141961867" />
     <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1589941814030">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

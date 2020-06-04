@@ -9,7 +9,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Schedule::class, function (Faker $faker) {
     $min_start_hour = 3; // osea desde la 3 a.m
-    $max_start_hour = 17; // osea desde las 5 p.m.
+    $max_start_hour = 17; // osea hasta las 5 p.m.
     $max_hours_travel = 18;
     $start = rand($min_start_hour*3600,$max_start_hour*3600);
     return [
