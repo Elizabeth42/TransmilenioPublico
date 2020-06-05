@@ -31,6 +31,8 @@ Route::resource('schedule', 'ScheduleController');
 Route::resource('bus', 'BusController');
 Route::resource('assignment', 'TimeRouteAssignmentController');
 Route::resource('travel', 'TravelController');
+Route::get('report/assignment', 'TimeRouteAssignmentController@getReport');
+Route::get('report/date/assignment', 'TimeRouteAssignmentController@getReportByDate');
 /*
  * Permite generar aleatoriamente la cantidad de elementos que se ingresan por parametro, sin embargo,
  * estos elementos solo se generan no se almacenan ni en un archivo ni se guardan en algun medio

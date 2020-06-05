@@ -6,7 +6,9 @@ use App\Bus;
 use App\Route;
 use App\Schedule;
 use App\TimeRouteAssignment;
+use App\Travel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -264,5 +266,55 @@ class TimeRouteAssignmentController extends Controller
                 'Content-Type' => 'application/json',
                 'Content-disposition' => 'attachment; filename=TimeRuteAssignment'.$amount.'Random.json'
             ]);
+    }
+
+    public function getReport()
+    {
+        $assignments = TimeRouteAssignment::where('activo_asignacion', '=', 'a')->orderBy('id_ruta')->get();
+        $report = collect();
+        foreach ($assignments as $key => $assign)
+        {
+            $element = [];
+            $element['route'] = $assign->routes()->first();
+            $element['bus'] = $assign->buses()->first();
+            $element['schedule'] = $assign->schedules()->first();
+            $element['count'] = $assign->travels()->count();
+            $report->add($element);
+        }
+        return $report;
+    }
+    public function getReportByDate()
+    {
+        /*
+         *
+        $assignments = DB::table('asignacion_ruta_horario')
+            ->join('viaje_realizado as vr', 'asignacion_ruta_horario.id_asignacion_ruta', '=', DB::raw('vr."ID_ASIGNACION_RUTA"'))
+            ->where('activo_asignacion', '=', 'a')
+            ->groupBy('id_asignacion_ruta', 'id_horario', DB::raw('TRUNC(vr."FECHA_INICIO_VIAJE")'))
+            ->selectRaw('ID_ASIGNACION_RUTA, ID_HORARIO, TRUNC(vr."FECHA_INICIO_VIAJE"), count(vr."FECHA_INICIO_VIAJE") as COUNT')
+            ->get();
+        */
+        $assignments = Travel::select('id_asignacion_ruta',  DB::raw('TRUNC("FECHA_INICIO_VIAJE") as fecha_inicio_viaje'), DB::raw('COUNT(TRUNC("FECHA_INICIO_VIAJE")) as total'))
+            ->groupBy('id_asignacion_ruta', DB::raw('TRUNC("FECHA_INICIO_VIAJE")'))->get();
+        /*
+         * [ "route" => "hola" , "bus" => "como", "count" => "Estas?"]
+         */
+        $report = collect();
+        foreach ($assignments as $assign)
+        {
+            $element = [];
+            $assign_route = TimeRouteAssignment::find($assign->id_asignacion_ruta);
+            $element['route'] = $assign_route->routes()->first();
+            $element['bus'] = $assign_route->buses()->first();
+            $element['schedule'] = $assign_route->schedules()->first();
+            $element['date'] = $assign->fecha_inicio_viaje;
+            $element['fecha_inicio_operacion'] = $assign_route->fecha_inicio_operacion;
+            $element['fecha_fin_operacion'] = $assign_route->fecha_fin_operacion;
+            $element['activo_asignacion'] = $assign_route->activo_asignacion;
+
+            $element['count'] = $assign->total;
+            $report->add($element);
+        }
+        return $report;
     }
 }
