@@ -138,18 +138,24 @@ class StopController extends Controller
     {
         $route = Route::find($idR);
         if (!isset($route))
-            return response('{"errors":"La ruta no existe"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta no existe"}',
+                400)->header('Content-Type', 'application/json');
         if ($route->activo_ruta == 'n')
-            return response('{"errors":"La ruta se encuentra inactiva"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":"La ruta se encuentra inactiva"}',
+                400)->header('Content-Type', 'application/json');
         if ($route->hasWagon($idW)) {
             $wagon_r = $route->wagons()->withPivot('estado_parada')->where('vagones.id_vagon', '=', $idW)->first();
             if ($wagon_r->activo_vagon == 'n')
-                return response('{"errors":"El vagon se encuentra inactivo"}', 400)->header('Content-Type', 'application/json');
+                return response('{"errors":"El vagon se encuentra inactivo"}',
+                    400)->header('Content-Type', 'application/json');
             $new_state = $wagon_r->pivot->estado_parada == 'a' ? 'n' : 'a';
             $route->wagons()->syncWithoutDetaching([$wagon_r->id_vagon => ['estado_parada' => $new_state]]);
-            return response($route->wagons()->withPivot('estado_parada')->where('vagones.id_vagon', '=', $idW)->first()->toJson(), 200)->header('Content-Type', 'application/json');
+            return response($route->wagons()->withPivot('estado_parada')
+                ->where('vagones.id_vagon', '=', $idW)->first()->toJson(),
+                200)->header('Content-Type', 'application/json');
         } else {
-            return response('{"errors":"El vagon no se encuentra asociado a esta ruta"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":"El vagon no se encuentra asociado a esta ruta"}',
+                400)->header('Content-Type', 'application/json');
         }
     }
 

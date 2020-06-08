@@ -27,6 +27,7 @@ class Controller extends BaseController
             foreach (\App\Route::all() as $route)
                 $content->add([$route->getKey() => $route->wagons()->withPivot('estado_parada', 'orden')->get()]);
         } else {
+            //Str::studly permite convertir mayusculas en minusculas para evitar errores
             $instance = '\\App\\' . \Illuminate\Support\Str::studly($model);
             $content = $instance::all();
         }

@@ -268,6 +268,10 @@ class TimeRouteAssignmentController extends Controller
             ]);
     }
 
+    /**
+     * Permite obtener todas las asignaciones que se encuentren activas, ordenarlas por el id_ruta  y contar
+     * la cantidad de viajes que se ha realizado  con esa asignacion
+     */
     public function getReport()
     {
         $assignments = TimeRouteAssignment::where('activo_asignacion', '=', 'a')->orderBy('id_ruta')->get();
@@ -283,6 +287,12 @@ class TimeRouteAssignmentController extends Controller
         }
         return $report;
     }
+
+    /**
+     *
+     * Este metodo permite obtener todos los viajes de cada asignacion por fecha
+     * @return \Illuminate\Support\Collection
+     */
     public function getReportByDate()
     {
         /*

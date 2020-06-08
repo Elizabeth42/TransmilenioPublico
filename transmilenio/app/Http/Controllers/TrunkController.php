@@ -45,9 +45,10 @@ class TrunkController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":"'.$valid[1].'"}',
+                400)->header('Content-Type', 'application/json');
 
-        //se encargara de crear el portal con la informacion del json
+        //se encargara de crear la troncal con la informacion del json
         $created = Trunk::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
     }
@@ -71,7 +72,8 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}',
+                400)->header('Content-Type', 'application/json');
         return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
@@ -97,10 +99,12 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}',
+                400)->header('Content-Type', 'application/json');
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
-            return response('{"errors": '. $validator->errors()->toJson().'}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',
+                400)->header('Content-Type', 'application/json');
         $updated = $trunk->update($validator->validated());
         if ($trunk->wasChanged('activo_troncal')){
             $trunk->enable($request->input('activo_troncal'));
@@ -108,12 +112,12 @@ class TrunkController extends Controller
         if ($updated)
             return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
         else
-            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}',
+                500)->header('Content-Type', 'application/json');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *pe
+     * permite modificar el estado de una troncal de activo a inactivo
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -121,14 +125,16 @@ class TrunkController extends Controller
     {
         $trunk = Trunk::find($id);
         if (!isset($trunk))
-            return response('{"errors":"La troncal no existe"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":"La troncal no existe"}',
+                400)->header('Content-Type', 'application/json');
         $state = $trunk->activo_troncal == 'a' ? 'n' : 'a';
         if ($trunk){
             $trunk->enable($state);
             $trunk->save();
             return response($trunk->toJson(), 200)->header('Content-Type', 'application/json');
         }else{
-            return response('{"errors":"unknow"}', 500)->header('Content-Type', 'application/json');
+            return response('{"errors":"unknow"}',
+                500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -179,7 +185,8 @@ class TrunkController extends Controller
             ]
         );
         if ($validator->fails())
-            return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
+            return response('{"errors": '. $validator->errors()->toJson().'}',
+                400)->header('Content-Type', 'application/json');
         $document = $request->file('file');
         $json =  \GuzzleHttp\json_decode(file_get_contents($document->getRealPath()));
         $errors = collect();
@@ -191,11 +198,13 @@ class TrunkController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations Prosseced BusTypes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "Congratulations Prosseced Trunks!!!!!!!!!", "errors":'.
+            json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
-     * por medio de este metodo genera automaticamente la cantidad de troncales que le ingrese por parametro
+     * por medio de este metodo genera automaticamente la cantidad de troncales que le ingrese por
+     * parametro en la base de datos
      * @param $amount
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
@@ -209,9 +218,16 @@ class TrunkController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}',
+            200)->header('Content-Type', 'application/json');;
     }
 
+    /**
+     * Este metodo permite generar aleatoriamente la cantidad de troncales que le entre por parametro
+     *  y descargarlo en un archivo JSON
+     * @param $amount
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function saveFactoryJson($amount){
         $content = $this->getRandom($amount);
         return response($content)
