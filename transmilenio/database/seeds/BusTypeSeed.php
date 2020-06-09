@@ -11,6 +11,6 @@ class BusTypeSeed extends Seeder
      */
     public function run()
     {
-        factory(App\BusType::class, 3)->create();
+        factory(App\BusType::class, 10)->create();
     }
 }

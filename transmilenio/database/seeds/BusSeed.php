@@ -11,7 +11,7 @@ class BusSeed extends Seeder
      */
     public function run()
     {
-        factory(App\Bus::class, 10)->make()->each(function($bus) {
+        factory(App\Bus::class, 30)->make()->each(function($bus) {
             $valid = self::validate($bus);
             if($valid)
                 $bus->save();

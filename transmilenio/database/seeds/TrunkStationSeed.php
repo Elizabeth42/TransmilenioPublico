@@ -12,7 +12,7 @@ class TrunkStationSeed extends Seeder
      */
     public function run()
     {
-        factory(App\TrunkStation::class, 10)->make()->each(function($trunkStation) {
+        factory(App\TrunkStation::class, 40)->make()->each(function($trunkStation) {
             $valid = self::validate($trunkStation);
             if($valid)
                 $trunkStation->save();

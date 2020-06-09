@@ -12,11 +12,11 @@ class RouteSeed extends Seeder
      */
     public function run()
     {
-        factory(App\Route::class, 3)->create();
+        factory(App\Route::class, 30)->create();
         // esto es para generar los aleatorios de parada
         $wagons = App\Wagon::all();
         $routes = App\Route::all();
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             $randomW = $wagons->random();
             $randomR = $routes->random();
             $stop = self::validate($randomW, $randomR);

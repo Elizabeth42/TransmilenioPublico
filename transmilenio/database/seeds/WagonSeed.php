@@ -9,7 +9,7 @@ class WagonSeed extends Seeder
 {
     public function run()
     {
-        factory(App\Wagon::class, 10)->make()->each(function($wagon) {
+        factory(App\Wagon::class, 70)->make()->each(function($wagon) {
             $valid = $this->validate($wagon);
             if($valid)
                 $wagon->save();

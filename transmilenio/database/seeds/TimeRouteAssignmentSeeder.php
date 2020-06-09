@@ -12,7 +12,7 @@ class TimeRouteAssignmentSeeder extends Seeder
     //
     public function run()
     {
-            factory(App\TimeRouteAssignment::class, 3)->make()->each(function($asigment) {
+            factory(App\TimeRouteAssignment::class, 50)->make()->each(function($asigment) {
                 $valid = self::validate($asigment);
                 if($valid)
                     $asigment->save();

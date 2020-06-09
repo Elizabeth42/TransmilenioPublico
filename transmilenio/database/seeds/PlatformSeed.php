@@ -13,7 +13,7 @@ class PlatformSeed extends Seeder
      */
     public function run()
     {
-        factory(App\Platform::class, 3)->make()->each(function($platform) {
+        factory(App\Platform::class, 30)->make()->each(function($platform) {
             $valid = self::validate($platform);
             if($valid)
                 $platform->save();

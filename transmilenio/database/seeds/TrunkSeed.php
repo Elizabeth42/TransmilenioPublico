@@ -11,6 +11,6 @@ class TrunkSeed extends Seeder
      */
     public function run()
     {
-        factory(App\Trunk::class, 3)->create();
+        factory(App\Trunk::class, 20)->create();
     }
 }

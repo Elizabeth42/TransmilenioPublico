@@ -13,7 +13,7 @@ class TravelSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Travel::class, 10)->make()->each(function($travel) {
+        factory(App\Travel::class, 120)->make()->each(function($travel) {
             $valid = self::validate($travel);
             if($valid)
                 $travel->save();

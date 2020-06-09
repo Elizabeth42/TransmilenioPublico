@@ -46,7 +46,7 @@ class WagonController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":'.( strrpos($valid[1], '}') ? $valid[1] :'"'.$valid[1].'"').'}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear el vagon con la informacion del json
         $created = Wagon::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');

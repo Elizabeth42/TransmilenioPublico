@@ -48,7 +48,8 @@ class PlatformController extends Controller
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":'.( strrpos($valid[1], '}') ? $valid[1] :'"'.$valid[1].'"').'}', 400)->header('Content-Type', 'application/json');
+
         //se encargara de crear la plataforma con la informacion del json
         $created = Platform::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -58,8 +59,12 @@ class PlatformController extends Controller
     private function validateModel($model){
         // permitira validar el request que ingreso que cumpla con las reglas basicas definidas
         $validator = $this->custom_validator($model);
+        $portal = Portal::find($model['id_portal']);
         if ($validator->fails()) {
             return [false, $validator->errors()->toJson()];
+        }
+        if ($portal->hasNumberPlatform($model['numero_plataforma'])>0){
+            return [false, 'El portal ya tiene ese numero de plataforma asociado'];
         }
 
         return [true, $validator->validated()];
@@ -105,7 +110,10 @@ class PlatformController extends Controller
         $validator = $this->custom_validator($request->all());
         if ($validator->fails())
             return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
-
+        $portal = Portal::find($request->input('id_portal'));
+        if ($portal->hasNumberPlatform($request->input('numero_plataforma'))>0){
+            return response('{"errors":"El portal ya tiene ese numero de plataforma asociado"}', 400)->header('Content-Type', 'application/json');
+        }
         $updated = $platform->update($validator->validated());
         //esto es para establecer si los hijos se activan o inactivan
         if ($platform->wasChanged('activo_plataforma')){

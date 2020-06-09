@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Route;
 use App\Wagon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use RouteSeed;
@@ -44,7 +45,7 @@ class StopController extends Controller
     {
         $valid = $this->validateModel($request->all(), $id);
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":'.( strrpos($valid[1], '}') ? $valid[1] :'"'.$valid[1].'"').'}', 400)->header('Content-Type', 'application/json');
         $route = Route::find($id);
         foreach ($valid[1] as $parada) {
             $id_wagon = $parada['id_vagon'];
@@ -118,13 +119,17 @@ class StopController extends Controller
         if ($validator->fails())
             return response('{"errors": '. $validator->errors()->toJson().'}',  400)->header('Content-Type', 'application/json');
         $paradas = $validator->validated()['wagons'];
-        $new_wagons = collect();
+        $new_wagons = [];
         foreach ($paradas as $key => $wagon) {
-            $new_wagons[$wagon['id_vagon']] = collect();
-            $new_wagons[$wagon['id_vagon']]['estado_parada'] = $wagon['estado_parada'];
-            $new_wagons[$wagon['id_vagon']]['orden'] = $key + 1;
+            $wagonSearch = Wagon::find($wagon['id_vagon']);
+            if ($wagonSearch->activo_vagon == 'n')
+                return response('{"errors":"El vagon ' . $wagon['id_vagon'] . ' se encuentra inactivo"}', 400)->header('Content-Type', 'application/json');
+            $new_wagon = [];
+            $new_wagon['estado_parada'] = $wagon['estado_parada'];
+            $new_wagon['orden'] = $key;
+            $new_wagons[$wagon['id_vagon']] = $new_wagon;
         }
-        $route->wagons()->syncWithoutDetaching($new_wagons);
+        $route->wagons()->sync($new_wagons);
     }
 
     /**

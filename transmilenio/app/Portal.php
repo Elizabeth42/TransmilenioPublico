@@ -17,6 +17,11 @@ class Portal extends Model
     public function  platforms(){
         return $this->hasMany('App\Platform', 'id_portal', 'id_portal');
     }
+    // permitira saber si este portal ya tiene el numero de plataforma que se esta asignando
+    public function  hasNumberPlatform(int $numeroPlataforma){
+        return $this->platforms()->where('numero_plataforma','=',$numeroPlataforma)->count() >0;
+    }
+
     // permitira activar o desactivar las plataformas asociadas a este portal
     public function enable($enable){
         $this->activo_portal = $enable;

@@ -11,6 +11,6 @@ class StationSeed extends Seeder
      */
     public function run()
     {
-        factory(App\Station::class, 3)->create();
+        factory(App\Station::class, 20)->create();
     }
 }

@@ -42,7 +42,7 @@ class TravelController extends Controller
     {
         $valid = $this->validateModel($request->all());
         if(!$valid[0])
-            return response('{"errors":"'.$valid[1].'"}', 400)->header('Content-Type', 'application/json');
+            return response('{"errors":'.( strrpos($valid[1], '}') ? $valid[1] :'"'.$valid[1].'"').'}', 400)->header('Content-Type', 'application/json');
         //se encargara de crear el viaje con la informacion del json
         $created = Travel::create($valid[1]);
         return response($created->toJson(), 200)->header('Content-Type', 'application/json');
@@ -61,6 +61,7 @@ class TravelController extends Controller
         $validateDate = Carbon::parse($asignacion->fecha_inicio_operacion)->gt($model['fecha_inicio_viaje']);
         if($validateDate)
             return [false , 'la fecha de inicio del viaje no puede ser menor que la fecha de inicio de operacion establecida en la asignacion'];
+
         return [true, $validator->validated()];
     }
 
