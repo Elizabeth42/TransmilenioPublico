@@ -161,7 +161,7 @@ class BusController extends Controller
                     })
                 ],
             ],
-            ['max' => ' El :attribute no debe exceder los :max caracteres.',
+            ['max' => ' La :attribute no debe exceder los :max caracteres.',
                 'required'=> 'El :attribute es obligatorio',
                 'id_tipo_bus.exists'=>'El tipo bus no existe o no esta activo',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo']

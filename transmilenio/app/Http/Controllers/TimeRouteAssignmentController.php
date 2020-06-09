@@ -172,7 +172,7 @@ class TimeRouteAssignmentController extends Controller
     {
         return Validator::make($data,
             ['activo_asignacion' => 'required|in:a,n',
-                'fecha_inicio_operacion' =>'required|date',
+                'fecha_inicio_operacion' =>'required|date|before:now',
                 'fecha_fin_operacion' =>'date|after:fecha_inicio_operacion|nullable',
                 //con esto valido que la ruta sea obligatoria, que la ruta exista y que se encuentre activa
                 'id_ruta'=>['required',
@@ -200,7 +200,8 @@ class TimeRouteAssignmentController extends Controller
                 'id_bus.exists'=>'El bus no existe o esta inactivo',
                 'id_horario.exists'=>'El horario no existe o esta inactivo',
                 'date'=> 'El :attribute debe ser una fecha',
-                'after' => 'La fecha final debe ser posterior a la fecha de inicio'
+                'after' => 'La fecha final debe ser posterior a la fecha de inicio',
+                'before' => 'La fecha inicio debe ser previa al momento actual'
             ]
         );
     }
