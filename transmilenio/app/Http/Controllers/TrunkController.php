@@ -198,7 +198,7 @@ class TrunkController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations Prosseced Trunks!!!!!!!!!", "errors":'.
+        return response('{"message": "¡Troncales cargadas satisfactoriamente!", "errors":'.
             json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
@@ -218,7 +218,7 @@ class TrunkController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}',
+        return response( '{"message": "¡Troncales generadas satisfactoriamente!", "errors":'.json_encode($errors).'}',
             200)->header('Content-Type', 'application/json');;
     }
 

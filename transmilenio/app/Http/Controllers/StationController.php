@@ -174,7 +174,7 @@ class StationController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations Prosseced BusTypes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Estaciones cargadas satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     public function saveRandom($amount) {
@@ -187,7 +187,7 @@ class StationController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Estaciones generadas satisfactoriamente", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

@@ -151,7 +151,7 @@ class PortalController extends Controller
             ],
             ['max' => ' El :attribute no debe exceder los :max caracteres.',
                 'required'=> 'El :attribute es obligatorio',
-                'id_troncal.exists'=>'La troncal no existe o no esta activa',
+                'id_troncal.exists'=>'La troncal :input no existe o no esta activa',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo']
         );
     }
@@ -186,7 +186,7 @@ class PortalController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations Prosseced Portals!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Portales cargados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -204,7 +204,7 @@ class PortalController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "¡Portales registrados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
     /**
      * Este metodo permite guardar el archivo json de una cantidad de elementos random creados segun el parametro que entra

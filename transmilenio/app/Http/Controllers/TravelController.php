@@ -162,7 +162,7 @@ class TravelController extends Controller
             ],
             ['date'=> 'El :attribute debe ser una fecha con hora',
                 'required'=> 'El :attribute es obligatorio',
-                'id_asignacion_ruta.exists'=>'La asignacion no existe o no esta activa',
+                'id_asignacion_ruta.exists'=>'La asignacion :input no existe o no esta activa',
                 'after'=>'La fecha de fin de viaje debe ser posterior a la del inicio de viaje'
             ]
         );
@@ -196,7 +196,7 @@ class TravelController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Viajes cargados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -214,7 +214,7 @@ class TravelController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "¡Viajes generados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

@@ -74,7 +74,7 @@ class TrunkStationController extends Controller
             return [false , 'La troncal o la estacion no existe'];
         }
         if($troncal->activo_troncal == 'n' || $station->activo_estacion == 'n'){
-            return [false , 'La troncal o la estacion se encuentra inactiva'];
+            return [false , 'La troncal '.$troncal->id_troncal.' o la estacion '.$station->id_estacion.' se encuentra inactiva'];
         }
         //finalmente se requiere garantizar que esa troncal no tenga asignada ya esa estacion pues ambas deben ser unicas
         if ($station->hasTrunk($troncal->id_troncal))
@@ -246,7 +246,7 @@ class TrunkStationController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Troncal_Estaciones cargadas satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -264,7 +264,7 @@ class TrunkStationController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Troncal_Estaciones generadas satisfactoriamente", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

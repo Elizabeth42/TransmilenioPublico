@@ -175,7 +175,7 @@ class BusTypeController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations Prosseced BusTypes!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Tipos de bus cargados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -193,7 +193,7 @@ class BusTypeController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "¡Tipos de bus generados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

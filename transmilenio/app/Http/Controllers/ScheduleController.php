@@ -180,7 +180,7 @@ class ScheduleController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations Prosseced Portals!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Horarios cargados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
     /**
      * por medio de este metodo genera automaticamente la cantidad de horarios que le ingrese por parametro
@@ -197,7 +197,7 @@ class ScheduleController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "¡Horarios generados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
     /**
      * Este metodo permite guardar el archivo json de una cantidad de elementos random creados segun el parametro que entra

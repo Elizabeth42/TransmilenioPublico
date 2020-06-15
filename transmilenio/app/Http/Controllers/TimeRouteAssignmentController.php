@@ -196,9 +196,9 @@ class TimeRouteAssignmentController extends Controller
             [
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo',
                 'required'=> 'El :attribute es obligatorio',
-                'id_ruta.exists'=>'La ruta no existe o no esta activa',
-                'id_bus.exists'=>'El bus no existe o esta inactivo',
-                'id_horario.exists'=>'El horario no existe o esta inactivo',
+                'id_ruta.exists'=>'La ruta :input no existe o no esta activa',
+                'id_bus.exists'=>'El bus :input no existe o esta inactivo',
+                'id_horario.exists'=>'El horario :input no existe o esta inactivo',
                 'date'=> 'El :attribute debe ser una fecha',
                 'after' => 'La fecha final debe ser posterior a la fecha de inicio',
                 'before' => 'La fecha inicio debe ser previa al momento actual'
@@ -234,7 +234,7 @@ class TimeRouteAssignmentController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Asignaciones cargadas satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -253,7 +253,7 @@ class TimeRouteAssignmentController extends Controller
                 $errors->add($valid[1]);
 
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "¡Asignaciones generadas satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
     /**
      * Este metodo permite guardar el archivo json de una cantidad de elementos random creados segun el parametro que entra

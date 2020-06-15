@@ -163,7 +163,7 @@ class BusController extends Controller
             ],
             ['max' => ' La :attribute no debe exceder los :max caracteres.',
                 'required'=> 'El :attribute es obligatorio',
-                'id_tipo_bus.exists'=>'El tipo bus no existe o no esta activo',
+                'id_tipo_bus.exists'=>'El tipo bus :input no existe o no esta activo',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo']
         );
     }
@@ -198,7 +198,7 @@ class BusController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Buses cargados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -217,7 +217,7 @@ class BusController extends Controller
                 $errors->add($valid[1]);
 
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "¡Buses generados satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**

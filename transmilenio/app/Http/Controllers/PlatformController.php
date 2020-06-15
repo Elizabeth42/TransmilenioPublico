@@ -163,7 +163,7 @@ class PlatformController extends Controller
             ],
             ['required' => ' El :attribute es obligatorio.',
                 'max' => ' El :attribute no debe exceder los :max caracteres.',
-                'id_portal.exists'=>'El portal no existe o no esta activa',
+                'id_portal.exists'=>'El portal :input no existe o no esta activo',
                 'in'=> 'El :attribute no puede tener otro valor que a para activo o n para inactivo',
                 'integer'=> 'El :attribute debe ser de tipo entero']
         );
@@ -199,7 +199,7 @@ class PlatformController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response('{"message": "Congratulations Platforms generate!!!!!!!!!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
+        return response('{"message": "¡Plataformas cargadas satisfactoriamente!", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -217,7 +217,7 @@ class PlatformController extends Controller
             else
                 $errors->add($valid[1]);
         }
-        return response( '{"message": "Reaady", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
+        return response( '{"message": "Plataformas generadas satisfactoriamente", "errors":'.json_encode($errors).'}', 200)->header('Content-Type', 'application/json');;
     }
 
     /**
