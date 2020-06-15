@@ -24,6 +24,7 @@ class TimeRouteAssignmentSeeder extends Seeder
         if( $asigment->schedules()->first()->activo_horario != 'n'&&
             $asigment->buses()->first()->activo_bus != 'n'&&
             $asigment->routes()->first()->activo_ruta != 'n') {
+            // permitira validar que sea unica la asignacion de ese bus, esa hora, esa ruta y esa fecha de inicio de operacion
             if (\App\TimeRouteAssignment:: where('ID_BUS', '=', $asigment->buses()->first()->id_bus)
                     ->where('ID_RUTA', '=', $asigment->routes()->first()->id_ruta)
                     ->where('ID_HORARIO', '=', $asigment->schedules()->first()->id_horario)

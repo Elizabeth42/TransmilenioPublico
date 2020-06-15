@@ -25,12 +25,9 @@ class StopController extends Controller
             return response('{"errors":"La ruta no existe"}', 400)->header('Content-Type', 'application/json');
         if (request()->header('active')) {
             $active = request()->header('active');
-            return response($route->wagons()->withPivot('estado_parada', 'orden')->where('paradas.estado_parada', '=', $active)->get());
+            return response($route->wagons()->withPivot('estado_parada', 'orden')->with('trunk_station')->with('platform')->where('paradas.estado_parada', '=', $active)->get());
         }
-        $list = $route->wagons()->withPivot('estado_parada', 'orden')
-            ->with('platform')
-            ->with('trunk_station')
-            ->orderBy('pivot_orden','asc')->get();
+        $list = $route->wagons()->withPivot('estado_parada', 'orden')->with('platform')->with('trunk_station')->orderBy('pivot_orden','asc')->get();
         return response($list, 200)->header('Content-Type', 'application/json');
     }
 
@@ -64,6 +61,14 @@ class StopController extends Controller
         // basicamente se pregunta que si existe un ultomo vagon y a partir de ello se asigna el orden
         return isset($last_bus_stop) ? $last_bus_stop->pivot->orden + 1 : 1;
     }
+    /*
+     * select * from (
+            select p.orden from paradas p
+            join vagones v on (p.id_vagon=v.id_vagon)
+            where v.id_vagon= 13
+            order by p.orden desc)
+        where rownum=1;
+     * */
 
     private function validateModel($model, $id){
         $route = Route::find($id);
@@ -92,7 +97,7 @@ class StopController extends Controller
             }
             // permitira establecer si la ruta ya tiene este vagon asociado y si el vagon se encuentra activo
             if ($route->hasWagon($id_wagon)){
-                $errors->add('El vagon ya se encuentra asignado a esta ruta');
+                $errors->add('El vagon '.$id_wagon.' ya se encuentra asignado a la ruta '.$id);
                 continue;
             }
             $parada['id_vagon']=$id_wagon;

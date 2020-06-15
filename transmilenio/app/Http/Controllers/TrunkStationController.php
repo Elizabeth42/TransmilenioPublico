@@ -21,9 +21,10 @@ class TrunkStationController extends Controller
     {
         if(request()->header('active')) {
             $active = request()->header('active');
-            return TrunkStation::where('activo_troncal_estacion', '=', $active)->get();
+            return TrunkStation::with('trunk')->with('station')->
+            where('activo_troncal_estacion', '=', $active)->get();
         }
-        return TrunkStation::all();
+        return TrunkStation::with('trunk')->with('station')->get();
         //return response(TrunkStation::all()->toJson(), 200)->header('Content-Type', 'application/json');
     }
 

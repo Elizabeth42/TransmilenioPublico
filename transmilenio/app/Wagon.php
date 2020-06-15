@@ -12,7 +12,7 @@ class Wagon extends Model
     protected $fillable = ['id_plataforma','id_troncal_estacion','numero_vagon','activo_vagon'];
 
     public function  platform(){
-        return $this->belongsTo('App\Platform', 'id_plataforma', 'id_plataforma');
+        return $this->belongsTo('App\Platform', 'id_plataforma', 'id_plataforma')->with('portal');
     }
 
     public function trunk_station(){

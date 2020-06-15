@@ -21,9 +21,9 @@ class PlatformController extends Controller
     {
         if(request()->header('active')) {
             $active = request()->header('active');
-            return Platform::where('activo_plataforma', '=', $active)->get();
+            return Platform::with('portal')->where('activo_plataforma', '=', $active)->get();
         }
-        return Platform::all();
+        return Platform::with('portal')->get();
      //   return response(Platform::all()->toJson(), 200)->header('Content-Type', 'application/json');
     }
 

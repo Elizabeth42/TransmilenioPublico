@@ -12,5 +12,4 @@ $factory->define(Portal::class, function (Faker $faker) {
         'id_troncal' => $trunk->random()->id_troncal,
         'activo_portal'=> rand(0,1) == 0 ? 'n' : 'a'
     ];
-
 });

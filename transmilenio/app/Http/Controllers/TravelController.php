@@ -19,7 +19,7 @@ class TravelController extends Controller
      */
     public function index()
     {
-        return response(Travel::all()->toJson(), 200)->header('Content-Type', 'application/json');
+        return response(Travel::with('asinnations')->get()->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
     /**

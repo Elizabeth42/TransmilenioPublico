@@ -21,9 +21,9 @@ class WagonController extends Controller
     {
         if(request()->header('active')) {
             $active = request()->header('active');
-            return Wagon::where('activo_vagon', '=', $active)->get();
+            return Wagon::with('trunk_station')->with('platform')->where('activo_vagon', '=', $active)->get();
         }
-        return Wagon::all();
+        return Wagon::with('trunk_station')->with('platform')->get();
     }
 
     /**
@@ -71,14 +71,14 @@ class WagonController extends Controller
         // en caso de que venga una troncal estacion
         if ($trunk_station!=null){
             if(!isset($trunk_station)){
-                return [false, 'la troncal_estacion no existe'];
+                return [false, 'La troncal_estacion no existe'];
             }
             if ($trunk_station->activo_troncal_estacion=='n'){
-                return [false, 'la troncal_estacion se encuentra inactiva'];
+                return [false, 'la troncal_estacion '.$trunk_station->getKey().' se encuentra inactiva'];
             }
             //finalmente se requiere garantizar que esa troncal_estacion no tenga asignada ya este numero de vagon
             if ($trunk_station->hasNumberWagon($model['numero_vagon'])>0){
-                return [false, 'la troncal_estacion ya tiene ese numero de vagon asociado'];
+                return [false, 'la troncal_estacion '.$trunk_station->getKey().' ya tiene ese numero de vagon asociado'];
             }
         }
         // en caso de que venga una plataforma
@@ -87,11 +87,11 @@ class WagonController extends Controller
                 return [false, 'la plataforma no existe'];
             }
             if ($plataforma->activo_plataforma=='n'){
-                return [false, 'la plataforma se encuentra inactiva'];
+                return [false, 'la plataforma '.$plataforma->getKey().' se encuentra inactiva'];
             }
             //finalmente se requiere garantizar que esa plataforma no tenga asignada ya este numero de vagon
             if ($plataforma->hasNumberWagon($model['numero_vagon'])>0){
-                return [false, 'la plataforma ya tiene esa numero de vagon asociado'];
+                return [false, 'la plataforma '.$plataforma->getKey().' ya tiene esa numero de vagon asociado'];
             }
         }
         return [true, $validator->validated()];

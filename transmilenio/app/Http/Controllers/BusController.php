@@ -22,9 +22,9 @@ class BusController extends Controller
     {
         if(request()->header('active')) {
             $active = request()->header('active');
-            return Bus::where('activo_bus', '=', $active)->get();
+            return Bus::with('busType')->where('activo_bus', '=', $active)->get();
         }
-        return Bus::all();
+        return Bus::with('busType')->get();
     }
 
     /**

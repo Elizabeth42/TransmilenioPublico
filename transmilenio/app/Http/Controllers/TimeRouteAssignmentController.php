@@ -24,9 +24,9 @@ class TimeRouteAssignmentController extends Controller
     {
         if(request()->header('active')) {
             $active = request()->header('active');
-            return TimeRouteAssignment::where('activo_asignacion', '=', $active)->get();
+            return TimeRouteAssignment::with('schedules')->with('buses')->with('routes')->where('activo_asignacion', '=', $active)->get();
         }
-        return TimeRouteAssignment::all();
+        return TimeRouteAssignment::with('schedules')->with('buses')->with('routes')->get();
     }
 
     /**
@@ -307,6 +307,9 @@ class TimeRouteAssignmentController extends Controller
         */
         $assignments = Travel::select('id_asignacion_ruta',  DB::raw('TRUNC("FECHA_INICIO_VIAJE") as fecha_inicio_viaje'), DB::raw('COUNT(TRUNC("FECHA_INICIO_VIAJE")) as total'))
             ->groupBy('id_asignacion_ruta', DB::raw('TRUNC("FECHA_INICIO_VIAJE")'))->get();
+        /*
+         *SELECT ID_ASIGNACION_RUTA, TRUNC(FECHA_INICIO_VIAJE) AS FECHA,COUNT(*) FROM VIAJE_REALIZADO GROUP BY ID_ASIGNACION_RUTA,TRUNC(FECHA_INICIO_VIAJE);
+         * */
         /*
          * [ "route" => "hola" , "bus" => "como", "count" => "Estas?"]
          */

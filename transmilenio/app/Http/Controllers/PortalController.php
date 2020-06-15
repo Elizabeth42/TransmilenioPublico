@@ -23,7 +23,7 @@ class PortalController extends Controller
             $active = request()->header('active');
             return Portal::where('activo_portal', '=', $active)->get();
         }
-        return Portal::all();
+        return Portal::with('trunk')->get();
       //  return response(Portal::all()->toJson(), 200)->header('Content-Type', 'application/json');
     }
 
